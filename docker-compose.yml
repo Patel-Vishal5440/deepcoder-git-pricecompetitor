@@ -1,0 +1,88 @@
+name: "lvk"
+
+services:
+    sonarqube:
+        container_name: sonarqube
+        image: sonarqube
+        depends_on:
+            - sonarqube-database
+        environment:
+            - SONARQUBE_JDBC_USERNAME=sonarqube
+            - SONARQUBE_JDBC_PASSWORD=sonarpass
+            - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-database:5432/sonarqube
+        volumes:
+            - sonarqube_conf:/opt/sonarqube/conf
+            - sonarqube_data:/opt/sonarqube/data
+            - sonarqube_extensions:/opt/sonarqube/extensions
+            - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+        ports:
+            - "9001:9000"
+
+    sonarqube-database:
+        container_name: sonarqube-database
+        image: postgres:17
+        environment:
+            - POSTGRES_DB=sonarqube
+            - POSTGRES_USER=sonarqube
+            - POSTGRES_PASSWORD=sonarpass
+        volumes:
+            - sonarqube_database:/var/lib/postgresql
+            - sonarqube_database_data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+    sonar-scanner:
+        image: sonarsource/sonar-scanner-cli
+        container_name: sonar-scanner
+        network_mode: "host"
+        environment:
+            - SONAR_HOST_URL=http://127.0.0.1:9001
+            - SONAR_SCANNER_OPTS=-Dsonar.projectKey=Priority
+            - SONAR_TOKEN=squ_dbb551afca2bd63ec24ca17443cfaea9897b8e35
+        volumes:
+            - .:/usr/src
+
+    database:
+        container_name: lvk-database
+        image: mysql:8.0
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_DATABASE=lvk
+            - MYSQL_USER=docker
+            - MYSQL_PASSWORD=docker
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - db-data:/var/lib/mysql
+        networks:
+            - lvk
+
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        depends_on:
+            - database
+        ports:
+            - "5050:80"
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOSTS=database
+            - PMA_USER=root
+            - PMA_PASSWORD=root
+            - UPLOAD_LIMIT=300M
+        networks:
+            - lvk
+
+volumes:
+    db-data: ~
+    sonarqube_database_data:
+    sonarqube_bundled-plugins:
+    sonarqube_conf:
+    sonarqube_data:
+    sonarqube_database:
+    sonarqube_extensions:
+
+
+networks:
+    lvk:
+        name: lvk
