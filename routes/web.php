@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update-price', [ProductController::class, 'updatePrice'])
         ->name('products.updatePrice');
         Route::post('/sync-specific', [ProductController::class, 'syncSpecificProduct'])->name('products.sync-specific');
+        
     });
 
 });
