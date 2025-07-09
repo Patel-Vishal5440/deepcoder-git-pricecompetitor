@@ -16,12 +16,12 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request)
+    public function profileSetting(Request $request)
     {
         $pageTitle = 'profile List';
         $pageDescription = 'Some description for the page';
 
-        return view('applications.social-app.profile_setting', [
+        return view('pages.profile-setting', [
             'user' => $request->user(),
             'pageTitle' => $pageTitle,
             'pageDescription' => $pageDescription

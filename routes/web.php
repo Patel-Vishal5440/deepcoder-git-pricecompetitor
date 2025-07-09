@@ -7,7 +7,8 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ErrorController;
+
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,15 @@ Route::group(['middleware' => 'auth'], function () {
     });
   
     Route::group(['prefix' => 'pages'], function () {
-        Route::get('/profile-setting', [SocialAppController::class, 'profileSetting'])->name('pages.profileSetting');
+        Route::get('/profile-setting', [ProfileController::class, 'profileSetting'])->name('pages.profileSetting');
+    });
+    
+    // Profile routes
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/edit', [ProfileController::class, 'profileSetting'])->name('profile.edit');
+        Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::post('/image', [ProfileController::class, 'updateImage'])->name('profile.image');
     });
     Route::group(['prefix' => 'applications'], function () {
         Route::group(['prefix' => 'users'], function () {
@@ -74,7 +83,6 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::get('404', [ErrorController::class, 'index'])->name('error');
-Route::get('maintenance', [ErrorController::class, 'maintenance'])->name('maintenance');
+
 
 Auth::routes();
