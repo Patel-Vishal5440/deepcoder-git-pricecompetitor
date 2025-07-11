@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\OdooController;
 
 use App\Http\Controllers\ProfileController;
 
@@ -44,18 +45,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
         Route::post('/image', [ProfileController::class, 'updateImage'])->name('profile.image');
     });
-    Route::group(['prefix' => 'applications'], function () {
-        Route::group(['prefix' => 'users'], function () {
-            Route::get('/team', [UserController::class, 'index'])->name('applications.users.team');
-            Route::get('/users-grid', [UserController::class, 'usersGrid'])->name('applications.users.usersGrid');
-            Route::get('/users', [UserController::class, 'users'])->name('applications.users.users');
-            Route::get('/users-list', [UserController::class, 'usersList'])->name('applications.users.usersList');
-            Route::get('/users-group', [UserController::class, 'usersGroup'])->name('applications.users.usersGroup');
-            Route::get('/add-users', [UserController::class, 'addUser'])->name('applications.users.addUser');
-            Route::get('/users-datatable', [UserController::class, 'usersDatatable'])->name('applications.users.usersDatatable');
-        });
-    });
-
 
 
     Route::group(['prefix' => 'competitor'], function () {
@@ -71,6 +60,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/list', [App\Http\Controllers\PriceHistoryController::class, 'index'])->name('price_history.list');
     });
 
+    Route::group(['prefix' => 'odoo'], function () {
+        Route::get('/authenticate', [OdooController::class, 'authenticate'])->name('odoo.authenticate');
+    });
+
     Route::group(['prefix' => 'products'], function () {
         Route::get('/list', [ProductController::class, 'index'])->name('products.list');
         Route::post('/add-link', [ProductController::class, 'addLink'])
@@ -81,5 +74,6 @@ Route::group(['middleware' => 'auth'], function () {
         // Route::get('/sync-products', [ProductController::class, 'syncProducts']);
         Route::get('/sync-products', [ProductController::class, 'syncProducts'])->name('products.syncProducts');
     });
+
 });
 Auth::routes();

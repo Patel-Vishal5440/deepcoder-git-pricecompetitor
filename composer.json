@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.1",
         "symfony/dom-crawler": "^7.3",
+        "symfony/http-client": "^7.3",
         "yajra/laravel-datatables": "^9.0"
     },
     "require-dev": {

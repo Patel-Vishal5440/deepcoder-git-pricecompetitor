@@ -3,19 +3,53 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use App\Models\OdooUser;
 
 class OdooService
 {
-    protected $url = 'https://mobilenzo1-printnode-21209016.dev.odoo.com/jsonrpc';
-    protected $db = 'mobilenzo1-printnode-21209016';
-    protected $user_id = 2959;
-    protected $api_key = '7a3bf7d78d4fdbfc88c65a6eabd0d649d6489937';
+    protected $url;
+    protected $db;
+    protected $username;
+    protected $api_key;
+    protected $user_id;
 
-    public function fetchProducts()
+    public function __construct()
+    {
+        $this->url = config('services.odoo.url');
+        $this->db = config('services.odoo.db');
+        $this->username = config('services.odoo.username');
+        $this->api_key = config('services.odoo.api_key');
+        $this->user_id = OdooUser::where('username', $this->username)->first()->odoo_user_id;
+    }
+
+    public function authenticate()
     {
         $response = Http::post($this->url, [
             "jsonrpc" => "2.0",
-            "id" => 10,
+            "method" => "call",
+            "params" => [
+                "service" => "common",
+                "method" => "authenticate",
+                "args" => [
+                    $this->db,
+                    $this->username,
+                    $this->api_key,
+                    []
+                ]
+            ]
+        ]);
+        $result = $response->json();
+        $this->storeOdooCredentials($this->username, $this->api_key, $result['result']);
+        return $result['result'] ?? null;
+    }
+    public function fetchProducts()
+    {   
+        if (!$this->user_id) {
+            $result = $this->authenticate();
+            $this->user_id = $result;
+        }
+        $response = Http::post($this->url, [
+            "jsonrpc" => "2.0",
             "method" => "call",
             "params" => [
                 "service" => "object",
@@ -34,10 +68,8 @@ class OdooService
                 ]
             ]
         ]);
-
         return $response->json();
     }
-
     public function updateProductPrice($productId, $newPrice)
     {
         try {
@@ -70,7 +102,6 @@ class OdooService
                 ];
             }
 
-            // Then, read back the updated value to confirm
             $readResponse = Http::post($this->url, [
                 "jsonrpc" => "2.0",
                 "id" => 11,
@@ -117,7 +148,6 @@ class OdooService
             ];
         }
     }
-
     public function fetchSpecificProduct($odooId)
     {
         try {
@@ -176,5 +206,14 @@ class OdooService
             ];
         }
     }
-    
+    public function storeOdooCredentials($username, $token, $userId)
+    {
+        OdooUser::updateOrCreate(
+            ['username' => $username],
+            [
+                'api_key' => $token,
+                'odoo_user_id' => $userId,
+            ]
+        );
+    }
 }
