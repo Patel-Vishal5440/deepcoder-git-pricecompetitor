@@ -41,7 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/edit', [ProfileController::class, 'profileSetting'])->name('profile.edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
         Route::post('/image', [ProfileController::class, 'updateImage'])->name('profile.image');
     });
     Route::group(['prefix' => 'applications'], function () {
@@ -77,12 +77,9 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('products.addLink');
         Route::post('/update-price', [ProductController::class, 'updatePrice'])
         ->name('products.updatePrice');
-        Route::post('/sync-specific', [ProductController::class, 'syncSpecificProduct'])->name('products.sync-specific');
-        
+        Route::get('/sync-specific', [ProductController::class, 'syncSpecificProduct'])->name('products.sync-specific');
+        // Route::get('/sync-products', [ProductController::class, 'syncProducts']);
+        Route::get('/sync-products', [ProductController::class, 'syncProducts'])->name('products.syncProducts');
     });
-
 });
-
-
-
 Auth::routes();

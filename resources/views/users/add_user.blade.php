@@ -38,7 +38,7 @@
                                      <input id="file-upload" type="file" name="fileUpload" class="d-none">
                                      <!-- Profile picture image-->
                                      <label for="file-upload">
-                                     <img class="ap-img__main rounded-circle wh-120 bg-lighter d-flex" src="{{ asset('img/author/profile.png') }}" alt="profile">
+                                     <img class="ap-img__main rounded-circle wh-120 bg-lighter d-flex" src="{{ asset('images/Mobilenzo_Logo_V3_1_.png') }}" alt="profile">
                                      <span class="cross" id="remove_pro_pic">
                                      <span data-feather="camera"></span>
                                      </span>

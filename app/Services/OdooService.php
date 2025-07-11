@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Http;
 
 class OdooService
 {
-    protected $url = 'https://mobilenzo1-printnode-18541827.dev.odoo.com/jsonrpc';
-    protected $db = 'mobilenzo1-printnode-18541827';
-    protected $user_id = 1171;
-    protected $api_key = 'f1d246d51980607fd6e49f0dd329f81806a5703e';
+    protected $url = 'https://mobilenzo1-printnode-21209016.dev.odoo.com/jsonrpc';
+    protected $db = 'mobilenzo1-printnode-21209016';
+    protected $user_id = 2959;
+    protected $api_key = '7a3bf7d78d4fdbfc88c65a6eabd0d649d6489937';
 
     public function fetchProducts()
     {

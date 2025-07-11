@@ -56,30 +56,16 @@ class ProfileController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        try {
-            $validated = $request->validateWithBag('updatePassword', [
-                'current_password' => ['required', 'current_password'],
-                'password' => ['required', Password::defaults(), 'confirmed'],
-            ]);
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
-            $request->user()->update([
-                'password' => Hash::make($validated['password']),
-            ]);
+        $user = $request->user();
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-            if ($request->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Password updated successfully.']);
-            }
-
-            return Redirect::route('profile.edit')->with('status', 'password-updated');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            throw $e;
-        }
+        return response()->json(['success' => true, 'message' => 'Password updated successfully!']);
     }
 
     /**

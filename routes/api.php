@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ApiFirestoreController;
 use App\Http\Controllers\VuestoreController;
-use App\Http\Controllers\Api\CompetitorPriceController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

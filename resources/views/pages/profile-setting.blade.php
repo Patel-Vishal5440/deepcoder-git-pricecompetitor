@@ -159,10 +159,9 @@
                                             <h5 class="fw-500">Change Password</h5>
                                         </div>
                                         <div class="edit-profile__body">
-                                            <form method="POST" action="{{ route('password.update') }}" id="password-form">
+                                            <form method="POST" action="{{ route('profile.password.update') }}" id="password-form">
                                                 @csrf
                                                 @method('PUT')
-                                                
                                                 @if (session('status') === 'password-updated')
                                                     <div class="alert alert-success" role="alert">
                                                         Password updated successfully!
@@ -258,9 +257,11 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
+                console.log(response);
                 if (response.success) {
                     toastr.success(response.message);
                     $('#password-form')[0].reset();
+                    window.location.href = '{{ route('profile.edit') }}';
                 }
             },
             error: function(xhr) {

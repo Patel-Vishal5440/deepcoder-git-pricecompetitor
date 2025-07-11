@@ -35,17 +35,27 @@ class StoreOdooProducts implements ShouldQueue
     {
         foreach ($this->products as $product) {
             try {
+                // Validate that product is an array and has required fields
+                if (!is_array($product) || !isset($product['id'])) {
+                    Log::warning("Skipping invalid product data:", $product);
+                    continue;
+                }
+                
                 Product::updateOrCreate(
                     ['odoo_id' => $product['id']],
                     [
                         'name' => $product['name'] ?? null,
                         'default_code' => $product['default_code'] ?? null,
                         'list_price' => $product['list_price'] ?? 0,
-                        'barcode' => $product['barcode'] ?? null,
+                        'barcode' => $product['barcode'] ?? null, // API doesn't provide barcode
                     ]
                 );
+                
+                Log::info("Successfully stored product with ID: " . $product['id']);
             } catch (\Exception $e) {
-                Log::error("Failed to store product: " . $e->getMessage());
+                Log::error("Failed to store product: " . $e->getMessage(), [
+                    'product' => $product ?? 'null'
+                ]);
             }
         }
     }

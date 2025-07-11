@@ -34,7 +34,7 @@ class ProductRepository
                     class='btn btn-icon btn-sm btn-light-primary sync-product' 
                     data-product-id='{$product->odoo_id}'
                     style='width: 32px; height: 32px;'>
-                    <i class='fas fa-sync fs-6'></i></a>";
+                    <i class='fas fa-sync fs-6 m-0'></i></a>";
                     
                 return $syncButton;
             })

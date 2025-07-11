@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PriceHistory;
+use App\Models\ActivityFeed;
 use Illuminate\Http\Request;
 
 class PriceHistoryController extends Controller
@@ -10,7 +10,7 @@ class PriceHistoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = PriceHistory::query();
+            $query = ActivityFeed::query();
             
             // Apply search filter if provided
             if ($request->has('searchData') && !empty($request->searchData)) {
@@ -20,7 +20,7 @@ class PriceHistoryController extends Controller
                       ->orWhere('price_new', 'like', "%{$searchData}%")
                       ->orWhere('type', 'like', "%{$searchData}%")
                       ->orWhere('model_id', 'like', "%{$searchData}%")
-                      ->orWhere('moderator_id', 'like', "%{$searchData}%");
+                      ->orWhere('user_id', 'like', "%{$searchData}%"); // Changed from moderator_id to user_id
                 });
             }
             
@@ -33,7 +33,7 @@ class PriceHistoryController extends Controller
                     'product_name' => $row->model_id ? 'Product #' . $row->model_id : 'N/A',
                     'price_old' => number_format($row->price_old ?? 0, 2),
                     'price_new' => number_format($row->price_new ?? 0, 2),
-                    'performed_by' => $row->moderator_id ? 'User #' . $row->moderator_id : 'System',
+                    'performed_by' => $row->user_id ? 'User #' . $row->user_id : 'System', // Changed from moderator_id to user_id
                 ];
             }
             

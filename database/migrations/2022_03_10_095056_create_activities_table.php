@@ -15,12 +15,12 @@ return new class extends Migration
         Schema::create('activity_feeds', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('model_id');
-            $table->unsignedBigInteger('moderator_id');
+            $table->unsignedBigInteger('user_id'); // Changed from moderator_id to user_id
             $table->string('type')->nullable();
             $table->decimal('price_old', 10, 2)->default(0);
             $table->decimal('price_new', 10, 2)->default(0);
             $table->timestamps();
-            $table->foreign('moderator_id')->references('id')->on('moderators')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Changed to reference users table
         });
     }
     
