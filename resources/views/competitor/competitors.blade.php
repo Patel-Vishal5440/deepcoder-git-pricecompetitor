@@ -27,22 +27,19 @@
                                     <table class="table mb-0">
                                         <thead>
                                             <tr class="userDatatable-header">
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Name</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Website</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Short Name</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Price Class Name</span>
                                                 </th>
-                                                <th>
-                                                    <span class="userDatatable-title">Status</span>
-                                                </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Actions</span>
                                                 </th>
                                             </tr>
@@ -57,38 +54,33 @@
                                             @else
                                                 @foreach ($competitors as $competitor)
                                                     <tr>
-                                                        <td>
+                                                        <td class="text-center align-middle">
                                                             <div class="userDatatable-content">
                                                                 {{ $competitor->name }}
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-center align-middle">
                                                             <div class="userDatatable-content">
                                                                 {{ $competitor->website == null ? 'N/A' : $competitor->website }}
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-center align-middle">
                                                             <div class="userDatatable-content">
                                                                 {{ $competitor->shortname }}
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="text-center align-middle">
                                                             <div class="userDatatable-content">
                                                                 {{ $competitor->price_class_name }}
                                                             </div>
                                                         </td>
-                                                        <td>
-                                                            <div class="userDatatable-content">
-                                                                <span
-                                                                    class="badge badge-{{ $competitor->status == 1 ? 'success' : 'danger' }}">
-                                                                    {{ $competitor->status == 1 ? 'Active' : 'Inactive' }}
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
+                                                        <td class="text-center align-middle">
                                                             <div class="userDatatable-content">
                                                                 <a href="{{ route('competitor.edit', $competitor->id) }}"
-                                                                    class="btn btn-warning btn-xs btn-rounded float-left">Edit</a>
+                                                                    class="btn btn-warning btn-sm btn-rounded d-inline-block me-1"
+                                                                    style="font-size: 0.95em; padding: 0.2em 0.8em; min-width: 60px;">
+                                                                    Edit
+                                                                </a>
                                                                 <button
                                                                     onclick="
                                              if(confirm('Are you sure you want to delete ?')){                                    
@@ -98,7 +90,10 @@
                                                 event.preventDefault();
                                              }
                                           "
-                                                                    class="btn btn-danger btn-xs btn-rounded float-left ml-1">Delete</button>
+                                                                    class="btn btn-danger btn-sm btn-rounded d-inline-block"
+                                                                    style="font-size: 0.95em; padding: 0.2em 0.8em; min-width: 60px;">
+                                                                    Delete
+                                                                </button>
                                                                 <form style="display:none;"
                                                                     id="delete-{{ $competitor->id }}"
                                                                     action="{{ route('competitor.delete', $competitor->id) }}"

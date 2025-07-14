@@ -16,15 +16,14 @@
                                         <label for="name" class="color-dark fs-14 fw-500 align-center">Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                            name="name" value="{{ old('name') }}" id="name" placeholder="Name"
-                                            required>
+                                            name="name" value="{{ old('name') }}" id="name" placeholder="Name">
                                         @if ($errors->has('name'))
                                             <p class="text-danger">{{ $errors->first('name') }}</p>
                                         @endif
                                         <div class="text-danger" id="name-error"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="website" class="color-dark fs-14 fw-500 align-center">Website</label>
+                                        <label for="website" class="color-dark fs-14 fw-500 align-center">Website<span class="text-danger">*</span></label>
                                         <input type="url" class="form-control ih-medium ip-gray radius-xs b-light px-15"
                                             name="website" id="website" value="{{ old('website') }}"
                                             placeholder="Website URL">
@@ -38,7 +37,7 @@
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
                                             name="shortname" value="{{ old('shortname') }}" id="shortname"
-                                            placeholder="Short Name" required>
+                                            placeholder="Short Name">
                                         @if ($errors->has('shortname'))
                                             <p class="text-danger">{{ $errors->first('shortname') }}</p>
                                         @endif
@@ -46,29 +45,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="price_class_name" class="color-dark fs-14 fw-500 align-center">Price
-                                            Class Name <span class="text-danger">*</span></label>
+                                            Class Name <span class="text-danger"></span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
                                             name="price_class_name" id="price_class_name"
-                                            value="{{ old('price_class_name') }}" placeholder="Price Class Name" required>
+                                            value="{{ old('price_class_name') }}" placeholder="Price Class Name">
                                         @if ($errors->has('price_class_name'))
                                             <p class="text-danger">{{ $errors->first('price_class_name') }}</p>
                                         @endif
                                         <div class="text-danger" id="price_class_name-error"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="status" class="color-dark fs-14 fw-500 align-center">Status <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                            name="status" id="status" required>
-                                            <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active
-                                            </option>
-                                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive
-                                            </option>
-                                        </select>
-                                        @if ($errors->has('status'))
-                                            <p class="text-danger">{{ $errors->first('status') }}</p>
-                                        @endif
-                                        <div class="text-danger" id="status-error"></div>
                                     </div>
                                     <div class="card-footer">
                                         <div class="row justify-content-end align-items-center">
@@ -208,6 +192,7 @@
                 }
             }
 
+            
             function validateStatus() {
                 const status = statusInput.value;
                 const errorElement = document.getElementById('status-error');

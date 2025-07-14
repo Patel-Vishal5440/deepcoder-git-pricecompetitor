@@ -32,4 +32,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductCompetitorPrice::class);
     }
+
+    public function activityFeed()
+    {
+        return $this->hasMany(ActivityFeed::class);
+    }
 }

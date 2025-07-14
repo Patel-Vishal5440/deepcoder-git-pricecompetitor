@@ -4,6 +4,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
@@ -43,9 +46,46 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/edit', [ProfileController::class, 'profileSetting'])->name('profile.edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-        Route::post('/image', [ProfileController::class, 'updateImage'])->name('profile.image');
+        Route::post('/image/update', [ProfileController::class, 'updateImage'])
+    ->name('profile.image.update');
     });
 
+    // Role Management Routes
+    Route::group(['prefix' => 'roles'], function () {
+        Route::get('/', [RoleController::class, 'index'])->name('roles.index');
+        Route::get('/create', [RoleController::class, 'create'])->name('roles.create');
+        Route::post('/', [RoleController::class, 'store'])->name('roles.store');
+        Route::get('/{role}', [RoleController::class, 'show'])->name('roles.show');
+        Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+        Route::put('/{role}', [RoleController::class, 'update'])->name('roles.update');
+        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::patch('/{role}/toggle-status', [RoleController::class, 'toggleStatus'])->name('roles.toggle-status');
+    });
+
+    // Permission Management Routes
+    Route::group(['prefix' => 'permissions'], function () {
+        Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');
+        Route::get('/create', [PermissionController::class, 'create'])->name('permissions.create');
+        Route::post('/', [PermissionController::class, 'store'])->name('permissions.store');
+        Route::get('/{permission}', [PermissionController::class, 'show'])->name('permissions.show');
+        Route::get('/{permission}/edit', [PermissionController::class, 'edit'])->name('permissions.edit');
+        Route::put('/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
+        Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+        Route::patch('/{permission}/toggle-status', [PermissionController::class, 'toggleStatus'])->name('permissions.toggle-status');
+    });
+
+    // User Management Routes
+    Route::group(['prefix' => 'user-management'], function () {
+        Route::get('/', [UserManagementController::class, 'index'])->name('user-management.index');
+        Route::get('/create', [UserManagementController::class, 'create'])->name('user-management.create');
+        Route::post('/', [UserManagementController::class, 'store'])->name('user-management.store');
+        Route::get('/{user}', [UserManagementController::class, 'show'])->name('user-management.show');
+        Route::get('/{user}/edit', [UserManagementController::class, 'edit'])->name('user-management.edit');
+        Route::put('/{user}', [UserManagementController::class, 'update'])->name('user-management.update');
+        Route::delete('/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
+        Route::patch('/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('user-management.toggle-status');
+        Route::get('/{user}/permissions', [UserManagementController::class, 'permissions'])->name('user-management.permissions');
+    });
 
     Route::group(['prefix' => 'competitor'], function () {
         Route::get('/list', [CompetitorController::class, 'index'])->name('competitor.list');

@@ -142,7 +142,11 @@ class ProductController extends Controller
                 ]
             );
 
-            $url = $request->competitor_url;
+            $competitor = Competitor::find($request->competitor_id);
+            $competitorName = $competitor->name;
+            $competitorUrl = $competitor->url;
+            $url = $competitorUrl;
+            $class = '.price-wrapper .price';
 
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -194,32 +198,5 @@ class ProductController extends Controller
             Log::error('Error in addLink: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while processing your request.']);
         }
-    }
-    
-    public function create()
-    {
-
-    }
-
-    public function show()
-    {
-
-    }
-
-    public function edit()
-    {
-
-    }
-
-    public function destroy()
-    {
-        
-    }
-    
-    public function monitorPrices()
-    {
-        return view('admin.product.history-prices', [
-            'title' => 'Monitor Prices'
-        ]);
     }
 }

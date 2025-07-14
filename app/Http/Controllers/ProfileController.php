@@ -33,22 +33,32 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string', 'max:255'],
-            'country' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:255'],
-            'company_name' => ['nullable', 'string', 'max:255'],
-            'website' => ['nullable', 'url', 'max:255'],
-            'bio' => ['nullable', 'string'],
-        ]);
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'phone_number' => ['required', 'string', 'max:255'],
+                'country' => ['nullable', 'string', 'max:255'],
+                'city' => ['nullable', 'string', 'max:255'],
+                'company_name' => ['nullable', 'string', 'max:255'],
+                'website' => ['nullable', 'url', 'max:255'],
+                'bio' => ['nullable', 'string'],
+            ]);
 
-        $user->fill($validated);
-        $user->save();
+            $user->fill($validated);
+            $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            return Redirect::route('products.list')->with('status', 'profile-updated');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return Redirect::back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            return Redirect::back()
+                ->with('error', 'An error occurred while updating profile.')
+                ->withInput();
+        }
     }
 
     /**

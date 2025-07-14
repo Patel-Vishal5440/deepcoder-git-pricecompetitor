@@ -57,9 +57,9 @@ class CompetitorController extends Controller {
      public function store(Request $request){
          $validators = Validator::make($request->all(),[
              'name'=>'required|string|max:255',
-             'website'=>'nullable|url|max:255',
+             'website'=>'required|url|max:255',
              'shortname'=>'required|string|max:100',
-             'price_class_name'=>'required|string|max:255',
+             'price_class_name'=>'nullable|string|max:255',
              'status'=>'required|in:1,0'
          ]);
 

@@ -19,7 +19,7 @@ class OdooService
         $this->db = config('services.odoo.db');
         $this->username = config('services.odoo.username');
         $this->api_key = config('services.odoo.api_key');
-        $this->user_id = OdooUser::where('username', $this->username)->first()->odoo_user_id;
+        $this->user_id = OdooUser::where('username', $this->username)->first()->odoo_user_id ?? null;
     }
 
     public function authenticate()

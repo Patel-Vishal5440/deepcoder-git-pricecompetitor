@@ -10,16 +10,19 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Create admin user
         User::create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('1234567`89'),
+            'password' => bcrypt('123456789'),
+        ]);
+
+        // Seed roles and permissions
+        $this->call([
+            RolePermissionSeeder::class,
         ]);
     }
 }

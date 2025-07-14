@@ -10,7 +10,7 @@ class PriceHistoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = ActivityFeed::query();
+            $query = ActivityFeed::with(['product', 'user']);
             
             // Apply search filter if provided
             if ($request->has('searchData') && !empty($request->searchData)) {
@@ -20,47 +20,30 @@ class PriceHistoryController extends Controller
                       ->orWhere('price_new', 'like', "%{$searchData}%")
                       ->orWhere('type', 'like', "%{$searchData}%")
                       ->orWhere('model_id', 'like', "%{$searchData}%")
-                      ->orWhere('user_id', 'like', "%{$searchData}%"); // Changed from moderator_id to user_id
+                      ->orWhere('user_id', 'like', "%{$searchData}%")
+                      // Filter by product name
+                      ->orWhereHas('product', function($q2) use ($searchData) {
+                          $q2->where('name', 'like', "%{$searchData}%");
+                      })
+                      // Filter by user name
+                      ->orWhereHas('user', function($q3) use ($searchData) {
+                          $q3->where('name', 'like', "%{$searchData}%");
+                      });
                 });
             }
             
             $data = $query->orderBy('created_at', 'desc')->get();
             
+            
             $result = [];
             foreach ($data as $row) {
+                // dd($row->user->name);
                 $result[] = [
-                    'date' => $row->created_at ? $row->created_at->format('M d, Y H:i') : 'N/A',
-                    'product_name' => $row->model_id ? 'Product #' . $row->model_id : 'N/A',
+                    'date' => date('m/d/Y H:i', strtotime($row->created_at)),
+                    'product_name' => $row->product ? $row->product->name : 'N/A',
                     'price_old' => number_format($row->price_old ?? 0, 2),
                     'price_new' => number_format($row->price_new ?? 0, 2),
-                    'performed_by' => $row->user_id ? 'User #' . $row->user_id : 'System', // Changed from moderator_id to user_id
-                ];
-            }
-            
-            // If no data exists, return sample data for demonstration
-            if (empty($result)) {
-                $result = [
-                    [
-                        'date' => date('M d, Y H:i'),
-                        'product_name' => 'Sample Product A',
-                        'price_old' => '99.99',
-                        'price_new' => '89.99',
-                        'performed_by' => 'Admin User'
-                    ],
-                    [
-                        'date' => date('M d, Y H:i', strtotime('-1 hour')),
-                        'product_name' => 'Sample Product B',
-                        'price_old' => '149.99',
-                        'price_new' => '129.99',
-                        'performed_by' => 'Manager User'
-                    ],
-                    [
-                        'date' => date('M d, Y H:i', strtotime('-2 hours')),
-                        'product_name' => 'Sample Product C',
-                        'price_old' => '199.99',
-                        'price_new' => '179.99',
-                        'performed_by' => 'Admin User'
-                    ]
+                    'performed_by' => $row->user ? $row->user->name : 'System',
                 ];
             }
             

@@ -30,8 +30,7 @@
                                     <div class="card border-0 p-3">
                                         <div class="card-header border-0  pb-md-15 pb-10 pt-md-20 pt-10 ">
                                             <div class="edit-profile__title">
-                                                <h6>Sign in to <span
-                                                        class="color-primary">{{ env('APP_NAME', 'Admin') }}</span></h6>
+                                                <h6>Sign in</h6>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -74,7 +73,7 @@
                                                                 <span class="checkbox-text">Keep me logged in</span>
                                                             </label>
                                                         </div>
-                                                        <a href="{{ route('password.request') }}">forget password</a>
+                                                        {{-- <a href="{{ route('password.request') }}">forget password</a> --}}
                                                     </div>
                                                     <div class="button-group d-flex pt-1 justify-content-center">
                                                         <button
@@ -83,15 +82,15 @@
                                                         </button>
                                                     </div>
                                                 </form>
-                                                <p class="social-connector text-center mb-sm-25 mb-15  mt-sm-30 mt-20">
+                                                {{-- <p class="social-connector text-center mb-sm-25 mb-15  mt-sm-30 mt-20">
                                                     <span>OR</span>
-                                                </p>
-                                                <p class="d-flex mt-3 justify-content-center">
+                                                </p> --}}
+                                                {{-- <p class="d-flex mt-3 justify-content-center">
                                                     Don't have an account?
                                                     <a href="{{ route('register') }}" class="color-primary mx-2">
                                                         Sign up
                                                     </a>
-                                                </p>
+                                                </p> --}}
                                             </div>
                                         </div><!-- End: .card-body -->
                                     </div><!-- End: .card -->

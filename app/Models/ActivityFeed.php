@@ -12,9 +12,13 @@ class ActivityFeed extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'model_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     // public function moderator()
     // {
     //     return $this->belongsTo(Moderator::class);

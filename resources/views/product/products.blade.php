@@ -45,6 +45,11 @@
         .removeuppercase {
             text-transform: none !important;
         }
+        th.userDatatable-header, 
+        #datatable thead th {
+            height: 40px !important;   /* Adjust the value as needed */
+            vertical-align: middle !important;
+        }
     </style>
 @endsection
 
@@ -71,8 +76,8 @@
                                 <table id="datatable" class="table mb-0 datatable">
                                     <thead>
                                         <tr class="userDatatable-header">
-                                            <th class="text-center">Id</th>
-                                            <th class="text-start">Name</th>
+                                            {{-- <th class="text-center">Id</th> --}}
+                                            <th class="text-start">Product Name</th>
                                             <th class="text-center">Sku</th>
                                             <th class="text-center">Price</th>
                                             @foreach ($competitors as $competitorId => $competitorName)
@@ -104,6 +109,7 @@
                 <input type="text" class="form-control" id="modalCompetitorLink" placeholder="Enter Competitor Link">
                 <input type="hidden" id="modalCompetitorId">
                 <input type="hidden" id="modalProductId">
+                <div id="modalCompetitorLinkError" class="text-danger mt-2" style="display:none;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -124,10 +130,11 @@
             <div class="modal-body">
                 <input type="text" class="form-control" id="modalPrice" placeholder="Enter Price">
                 <input type="hidden" id="modalPriceProductId">
+                <div id="modalPriceError" class="text-danger mt-2" style="display:none;"></div>
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-danger float-left" data-bs-dismiss="modal" >Cancel</button>
-                <button type="button" class="btn btn-success savePriceBtn float-end" id="savePrice">Save</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary savePriceBtn" id="savePrice">Save</button>
             </div>
         </div>
     </div>
@@ -161,6 +168,12 @@ $(document).ready(function() {
         searching: false,
         ordering: false,
         dom: 'rt<"bottom"lp><"clear">',
+        language: {
+            emptyTable: `<div class="py-4 text-center text-muted">
+                <i class="fas fa-box-open fa-2x mb-2"></i><br>
+                <span style="font-size: 1.1em;">No products found.</span>
+            </div>`
+        },
         ajax: {
             url: "{{ route('products.list') }}",
             data: function(data) {
@@ -173,7 +186,7 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'odoo_id', name: 'id', className: 'text-center', width: '60px' },
+            // { data: 'odoo_id', name: 'id', className: 'text-center', width: '60px' },
             { data: 'name', name: 'name', className: 'text-start product-name-wrap', width: '250px' },
             { data: 'default_code', name: 'default_code', className: 'text-center', width: '120px' },
             {
@@ -238,6 +251,9 @@ $(document).ready(function() {
     $(document).on("click", ".edit-price-btn", function() {
         $('#modalPriceProductId').val($(this).data("product-id"));
         $('#modalPrice').val($(this).data("current-price"));
+        // For edit price modal
+        $('#modalPriceError').hide();
+        $('#modalPrice').removeClass('is-invalid');
         $('#priceEditModal').modal('show');
     });
 
@@ -245,21 +261,31 @@ $(document).ready(function() {
         $('#modalCompetitorId').val($(this).data('row-id'));
         $('#modalProductId').val($(this).data('product-id'));
         $('#modalCompetitorLink').val($(this).data('current-link'));
+        // For competitor link modal
+        $('#modalCompetitorLinkError').hide();
+        $('#modalCompetitorLink').removeClass('is-invalid');
         $('#competitorLinkModal').modal('show');
     });
 
     $(document).on('click', '#saveCompetitorLink', function() {
         showPageLoading();
+        $('#modalCompetitorLinkError').hide();
+        $('#modalCompetitorLink').removeClass('is-invalid');
         let competitorId = $('#modalCompetitorId').val();
         let productId = $('#modalProductId').val();
         let link = $('#modalCompetitorLink').val();
 
         if (!link.trim()) {
-            toastr.error('Please enter a URL');
-            $('.com_Link').modal('hide');
+            // Show error near input
+            $('#modalCompetitorLinkError').text('Please enter a URL').show();
+            $('#modalCompetitorLink').addClass('is-invalid');
+            // Do NOT close the modal
             hidePageLoading();
-            table.ajax.reload();
+            // Do NOT reload table
             return;
+        } else {
+            $('#modalCompetitorLinkError').hide();
+            $('#modalCompetitorLink').removeClass('is-invalid');
         }
 
         $.post("{{ route('products.addLink') }}", {
@@ -284,12 +310,25 @@ $(document).ready(function() {
 
     $(document).on('click', '.savePriceBtn', function() {
         var $btn = $(this);
+        $('#modalPriceError').hide();
+        $('#modalPrice').removeClass('is-invalid');
         $btn.prop('disabled', true).text('Saving...');
         showPageLoading();
+        var price = $('#modalPrice').val();
+        if (!price.trim() || isNaN(price) || Number(price) < 0) {
+            $('#modalPriceError').text('Please enter a valid price').show();
+            $('#modalPrice').addClass('is-invalid');
+            hidePageLoading();
+            $btn.prop('disabled', false).text('Save');
+            return;
+        } else {
+            $('#modalPriceError').hide();
+            $('#modalPrice').removeClass('is-invalid');
+        }
         $.post("{{ route('products.updatePrice') }}", {
             _token: "{{ csrf_token() }}",
             id: $('#modalPriceProductId').val(),
-            list_price: $('#modalPrice').val()
+            list_price: price
         }).done(function(response) {
             hidePageLoading();
             $btn.prop('disabled', false).text('Save');
