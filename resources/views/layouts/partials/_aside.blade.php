@@ -29,12 +29,12 @@
                 auth()->user()->hasPermission('role.view') ||
                 auth()->user()->hasPermission('permission.view')
             )
-                {{-- <li class="menu-title mt-3">
+                <li class="menu-title mt-3">
                     <span>Management</span>
-                </li> --}}
+                </li>
             @endif
 
-            {{-- @if(auth()->user()->isAdmin() || auth()->user()->hasPermission('user.view'))
+            @if(auth()->user()->isAdmin() || auth()->user()->hasPermission('user.view'))
                 <li>
                     <a href="{{ route('user-management.index') }}" class="{{ request()->is('user-management*') ? 'active' : '' }}">
                         <span data-feather="user" class="nav-icon"></span>
@@ -57,7 +57,7 @@
                         <span class="menu-text">Permission Management</span>
                     </a>
                 </li>
-            @endif --}}
+            @endif
         @endauth
       </ul>
    </div>

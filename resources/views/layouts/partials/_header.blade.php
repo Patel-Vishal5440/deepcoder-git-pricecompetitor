@@ -35,7 +35,7 @@
                                 </div>
                                 <div>
                                     <h6>{{ Auth::user()->name }}</h6>
-                                    <span>UI Designer</span>
+                                    <span>{{ Auth::user()->email }}</span>
                                 </div>
                             </div>
                             <div class="nav-author__options">
