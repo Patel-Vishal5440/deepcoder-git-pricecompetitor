@@ -23,9 +23,9 @@ class ScrapeCompetitorPrices extends Command
                 $website = $scrapePrice->competitor_url;
                 
                 // Validate URL
-                if (!filter_var($website, FILTER_VALIDATE_URL)) {
-                    Log::error("Invalid URL format: {$website}");
-                    $this->error("Invalid URL format: {$website}");
+                if (empty($website) || !filter_var($website, FILTER_VALIDATE_URL)) {
+                    Log::error("Invalid URL format: " . ($website ?? 'null'));
+                    $this->error("Invalid URL format: " . ($website ?? 'null'));
                     continue;
                 }
 

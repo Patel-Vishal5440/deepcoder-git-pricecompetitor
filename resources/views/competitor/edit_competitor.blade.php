@@ -63,22 +63,6 @@
                                             @endif
                                             <div class="text-danger" id="price_class_name-error"></div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="status" class="color-dark fs-14 fw-500 align-center">Status <span
-                                                    class="text-danger">*</span></label>
-                                            <select class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                                name="status" id="status" required>
-                                                <option value="">Choose Status</option>
-                                                <option value="1" {{ $competitor->status == '1' ? 'selected' : '' }}>
-                                                    Active</option>
-                                                <option value="0" {{ $competitor->status == '0' ? 'selected' : '' }}>
-                                                    Inactive</option>
-                                            </select>
-                                            @if ($errors->has('status'))
-                                                <p class="text-danger">{{ $errors->first('status') }}</p>
-                                            @endif
-                                            <div class="text-danger" id="status-error"></div>
-                                        </div>
                                         <div class="card-footer">
                                             <div class="row justify-content-end align-items-center">
                                                 <div class="layout-button mt-25">
@@ -88,7 +72,6 @@
                                                         class="btn btn-success btn-squared">Update</button>
                                                 </div>
                                             </div>
-                                            {{-- </div> --}}
                                         </div>
                                     </form>
                                 @endforeach

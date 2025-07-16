@@ -130,6 +130,12 @@ class ProductController extends Controller
         ]);
 
         try {
+            // Validate that product exists
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found'], 404);
+            }
+
             $productCompetitorPrice = ProductCompetitorPrice::updateOrCreate(
                 [
                     'product_id' => $request->product_id,
@@ -143,10 +149,22 @@ class ProductController extends Controller
             );
 
             $competitor = Competitor::find($request->competitor_id);
+            
+            if (!$competitor) {
+                return response()->json(['success' => false, 'message' => 'Competitor not found'], 404);
+            }
+            
             $competitorName = $competitor->name;
-            $competitorUrl = $competitor->url;
-            $url = $competitorUrl;
+            $competitorUrl = $competitor->website;
+            
+            // Use the provided competitor_url instead of competitor's website
+            $url = $request->competitor_url;
             $class = '.price-wrapper .price';
+
+            // Validate URL before making the request
+            if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+                return response()->json(['success' => false, 'message' => 'Invalid URL provided'], 400);
+            }
 
             $response = Http::withHeaders([
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -155,7 +173,12 @@ class ProductController extends Controller
 
 
             if (!$response->successful()) {
-                return response()->json(['message' => 'Failed to fetch data', 'status' => $response->status()]);
+                Log::error('Failed to fetch data from URL', [
+                    'url' => $url,
+                    'status' => $response->status(),
+                    'response_body' => $response->body()
+                ]);
+                return response()->json(['success' => false, 'message' => 'Failed to fetch data from the provided URL', 'status' => $response->status()]);
             }
 
             $html = $response->body();
@@ -182,8 +205,11 @@ class ProductController extends Controller
                     $amount = $matches[0] ?? null;
                 }
             } else {
-                Log::error('No price elements found for the given class.');
-                return response()->json(['message' => 'Failed to scrape price']);
+                Log::error('No price elements found for the given class.', [
+                    'url' => $url,
+                    'class' => $class
+                ]);
+                return response()->json(['success' => false, 'message' => 'Failed to scrape price - no price elements found']);
             }
 
             if (!$amount) {
@@ -195,8 +221,13 @@ class ProductController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Price scraped successfully!', 'price' => $amount]);
         } catch (\Exception $e) {
-            Log::error('Error in addLink: ' . $e->getMessage());
-            return response()->json(['message' => 'An error occurred while processing your request.']);
+            Log::error('Error in addLink: ' . $e->getMessage(), [
+                'product_id' => $request->product_id,
+                'competitor_id' => $request->competitor_id,
+                'competitor_url' => $request->competitor_url,
+                'exception' => $e
+            ]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while processing your request.']);
         }
     }
 }
