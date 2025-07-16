@@ -28,7 +28,6 @@
     {{-- Endinject --}}
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/Mobilenzo_Logo_V3_1_.png') }}">
 </head>
-
 <body class="layout-light side-menu @auth() overlayScroll @endauth">
     @auth()
         <div class="mobile-search"></div>
