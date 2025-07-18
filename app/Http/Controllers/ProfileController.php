@@ -18,7 +18,7 @@ class ProfileController extends Controller
      */
     public function profileSetting(Request $request)
     {
-        $pageTitle = 'profile List';
+        $pageTitle = 'Profile List';
         $pageDescription = 'Some description for the page';
 
         return view('pages.profile-setting', [

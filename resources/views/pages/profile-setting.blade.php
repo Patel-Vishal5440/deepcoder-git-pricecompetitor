@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5">
-    <div class="row justify-content-center">
+<div class="contents">
+    <div class="row justify-content-center my-4">
         <div class="col-lg-7 col-md-8">
             @if(session('status') === 'profile-updated')
                 <div class="alert alert-success">Profile updated successfully!</div>

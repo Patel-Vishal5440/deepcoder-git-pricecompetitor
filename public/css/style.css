@@ -13223,6 +13223,9 @@ table.table-basic tr td.card .card-body,
 .input-container.icon-left input {
   padding-left: 40px;
 }
+.input-container.icon-right input {
+  padding-right: 40px;
+}
 
 .form-group input::-moz-placeholder {
   color: #9299b8;
