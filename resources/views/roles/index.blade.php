@@ -21,7 +21,7 @@
                                         style="width: 250px;" value="{{ request('search') }}">
                                 </form>
                                 <div>
-                                    <a href="{{ route('roles.create') }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('roles.create') }}" class="btn btn-outline-primary">
                                         <i class="fas fa-plus"></i> Create Role
                                     </a>
                                 </div>
@@ -46,36 +46,46 @@
                                                 <td class="text-center align-middle">{{ $role->permissions->count() }}</td>
                                                 <td class="text-center align-middle">{{ $role->users->count() }}</td>
                                                 <td class="text-center align-middle">
-                                                    {{ $role->is_active ? 'Active' : 'Inactive' }}</td>
+                                                    <span class="badge-lg rounded px-3 py-1"
+                                                        style="font-size: 12px; font-weight: 500; color: {{ $role->is_active ? '#198754' : '#dc3545' }}; background-color: {{ $role->is_active ? '#30ff302b' : '#ffcccc85' }};">
+                                                        {{ $role->is_active ? 'Active' : 'Inactive' }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center align-middle">
-                                                    <a href="{{ route('roles.show', $role) }}" title="View"><i
-                                                            class="fas fa-eye"></i></a>
-                                                    |
-                                                    <a href="{{ route('roles.edit', $role) }}" title="Edit"><i
-                                                            class="fas fa-edit"></i></a>
-                                                            @if ($role->users->count() == 0)
-                                                            <form action="{{ route('roles.destroy', $role) }}" method="POST"
-                                                            style="display:inline">
+                                                    <div class="d-inline-flex gap-2 align-items-center">
+                                                        <a href="{{ route('roles.show', $role) }}" title="View" class="mx-2"><i
+                                                                class="fas fa-eye"></i></a>
+                                                        <span class="text-light">|</span>
+                                                        <a href="{{ route('roles.edit', $role) }}" title="Edit" class="mx-2 "><i
+                                                                class="fas fa-edit"></i></a>
+                                                        <span class="text-light">|</span>
+                                                        @if ($role->users->count() == 0)
+                                                            <form action="{{ route('roles.destroy', $role) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-link text-danger p-0 m-0 align-baseline mx-2"
+                                                                    style="font-size:inherit;" title="Delete">
+                                                                    <i class="fas fa-trash m-0"></i> </button>
+                                                            </form>
+                                                            <span class="text-light">|</span>
+                                                        @endif
+                                                        <form action="{{ route('roles.toggle-status', $role) }}"
+                                                            method="POST">
                                                             @csrf
-                                                            @method('DELETE')
+                                                            @method('PATCH')
                                                             <button type="submit"
-                                                            class="btn btn-link text-danger p-0 m-0 align-baseline"
-                                                            style="font-size:inherit;" title="Delete">
-                                                            <i class="fas fa-trash"></i> Delete
-                                                        </button>
-                                                    </form>
-                                                    @endif
-                                                    <form action="{{ route('roles.toggle-status', $role) }}" method="POST"
-                                                        style="display:inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline"
-                                                            style="font-size:inherit;"
-                                                            title="{{ $role->is_active ? 'Deactivate' : 'Activate' }}">
-                                                            <i class="fas fa-{{ $role->is_active ? 'ban' : 'check' }}"></i>
-                                                            {{ $role->is_active ? 'Deactivate' : 'Activate' }}
-                                                        </button>
-                                                    </form>
+                                                                class="btn btn-link p-0 m-0 align-baseline mx-2"
+                                                                style="font-size:inherit;"
+                                                                title="{{ $role->is_active ? 'Deactivate' : 'Activate' }}">
+                                                                <i
+                                                                    class="fas fa-{{ $role->is_active ? 'ban' : 'check' }}"></i>
+                                                                {{-- {{ $role->is_active ? 'Deactivate' : 'Activate' }} --}}
+                                                            </button>
+                                                        </form>
+                                                    </div>
+
                                                 </td>
                                             </tr>
                                         @empty

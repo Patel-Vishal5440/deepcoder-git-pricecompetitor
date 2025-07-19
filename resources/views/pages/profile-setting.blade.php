@@ -74,9 +74,9 @@
                                       class="form-control">{{ old('bio', $user->bio) }}</textarea>
                         </div>
 
-                        <div class="form-group d-flex justify-content-end">
-                            <a href="{{ route('products.list') }}" class="btn btn-danger btn-lg mr-2">Cancel</a>
-                            <button class="btn btn-success btn-lg">Save</button>
+                        <div class="form-group d-flex justify-content-end my-4">
+                            <a href="{{ route('products.list') }}" class="btn btn-light px-4 mx-1">Cancel</a>
+                            <button class="btn btn-primary px-4 mx-1">Save</button>
                         </div>
                     </form>
                 </div>

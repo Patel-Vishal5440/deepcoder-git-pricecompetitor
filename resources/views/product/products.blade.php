@@ -61,10 +61,13 @@
                 <div class="card mt-3" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
                     <div class="card-body p-3">
                         <div class="color-dark fw-500 d-flex justify-content-start mt-15 mx-4">
-                            <div class="input-container icon-left position-relative">
+                            <div class="input-container icon-left icon-right position-relative">
                                 <span class="input-icon icon-left">
                                     <span data-feather="search"></span>
                                 </span>
+                                <span class="input-icon icon-right" onclick="clearSearch()">
+                                            <i data-feather="x" class="text-muted"></i>
+                                        </span>
                                 <input type="text" id="search" name="search" data-table="datatable"
                                     autocomplete="off"
                                     class="form-control form-control-solid w-250px ps-12 table_search"

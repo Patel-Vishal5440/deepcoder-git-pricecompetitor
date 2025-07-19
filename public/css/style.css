@@ -27077,3 +27077,11 @@ table.table-rounded tbody tr td:last-child {
     color: #2c3e50;
 }
 
+.per_page{
+  color: #4b5675;
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+}

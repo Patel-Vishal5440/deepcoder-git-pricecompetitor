@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="card mt-4">
+                <div class="card my-4">
                     <div class="card-header p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -31,11 +31,11 @@
                                         <td>Role:</td>
                                         <td>
                                             @if($user->role)
-                                                <span class="badge-lg border border-primary text-primary rounded px-3 py-1" style="font-size: 12px; font-weight: 500;">
+                                                <span class="badge-lg text-primary rounded px-3 py-1" style="font-size: 12px;font-weight: 500;background-color: #5f63f221;">
                                                     {{ $user->role->name }}
                                                 </span>
                                             @else
-                                                <span class="badge-lg border border-danger text-danger rounded px-3 py-1" style="font-size: 12px; font-weight: 500;">No Role Assigned</span>
+                                                <span class="badge-lg text-danger rounded px-3 py-1" style="font-size: 12px;font-weight: 500;background-color: #ff4d4f21;">Unassigned Role</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -85,9 +85,9 @@
                                 @else
                                     <div class="alert alert-info">
                                         @if($user->role)
-                                            <i class="fas fa-info-circle"></i> This role has no specific permissions assigned.
+                                            This role has no specific permissions assigned.
                                         @else
-                                            <i class="fas fa-info-circle"></i> This user has no role assigned, therefore no permissions.
+                                            This user has no role assigned, therefore no permissions.
                                         @endif
                                     </div>
                                 @endif
@@ -97,11 +97,9 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="d-flex justify-content-end">
-                                    <a href="{{ route('user-management.index') }}" class="btn btn-light mx-1">
-                                        <i class="fas fa-arrow-left"></i> Back to Users
+                                    <a href="{{ route('user-management.index') }}" class="btn btn-light mx-1">Cancel
                                     </a>
-                                    <a href="{{ route('user-management.show', $user) }}" class="btn btn-primary mx-1">
-                                        <i class="fas fa-eye"></i> View User Details
+                                    <a href="{{ route('user-management.show', $user) }}" class="btn btn-primary mx-1">View User Details
                                     </a>
                                 </div>
                             </div>

@@ -21,7 +21,7 @@
                                         style="width: 250px;" value="{{ request('search') }}">
                                 </form>
                                 <div>
-                                    <a href="{{ route('user-management.create') }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('user-management.create') }}" class="btn btn-outline-primary">
                                         <i class="fas fa-plus"></i> Create User
                                     </a>
                                 </div>
@@ -44,12 +44,14 @@
                                                 <td class="text-center align-middle">{{ $user->email }}</td>
                                                 <td class="text-center align-middle">
                                                     @if ($user->role)
-                                                        <span class="badge border border-primary text-primary rounded px-3 py-1"
-                                                            style="font-size: 12px; font-weight: 500;">
+                                                        <span class="badge-lg text-primary rounded px-3 py-1"
+                                                            style="font-size: 12px;font-weight: 500;background-color: #5f63f221;">
                                                             {{ strtolower($user->role->name) }}
                                                         </span>
-                                                        @else
-                                                            <span class="badge bg-secondary">No Role</span>
+                                                    @else
+                                                        <span class="badge-lg text-danger rounded px-3 py-1"
+                                                            style="font-size: 12px;font-weight: 500;background-color: #ff4d4f21;">Unassigned
+                                                            Role</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center align-middle">{{ $user->company_name ?? 'N/A' }}</td>
@@ -67,28 +69,31 @@
                                                 <td class="text-center align-middle">
                                                     {{ $user->created_at->format('M d, Y') }}</td>
                                                 <td class="text-center align-middle">
-                                                    <a href="{{ route('user-management.show', $user) }}" title="View"><i
-                                                            class="fas fa-eye"></i></a>
-                                                    <span class="text-light">|</span>
-                                                    <a href="{{ route('user-management.edit', $user) }}" title="Edit"><i
-                                                            class="fas fa-edit"></i></a>
-                                                    <span class="text-light">|</span>
-                                                    <a href="{{ route('user-management.permissions', $user) }}"
-                                                        title="Permissions"><i class="fas fa-key"></i></a>
-                                                    @if ($user->id !== auth()->id())
+                                                    <div class="d-inline-flex gap-2 align-items-center">
+
+                                                        <a href="{{ route('user-management.show', $user) }}" class="mx-2"
+                                                            title="View"><i class="fas fa-eye"></i></a>
                                                         <span class="text-light">|</span>
-                                                        <form action="{{ route('user-management.destroy', $user) }}"
-                                                            method="POST" style="display:inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-link text-danger p-0 m-0 align-baseline"
-                                                                style="font-size:inherit;" title="Delete"
-                                                                onclick="return confirm('Are you sure you want to delete this user?')">
-                                                                <i class="fas fa-trash"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                        <a href="{{ route('user-management.edit', $user) }}" class="mx-2"
+                                                            title="Edit"><i class="fas fa-edit"></i></a>
+                                                        <span class="text-light">|</span>
+                                                        <a href="{{ route('user-management.permissions', $user) }}"
+                                                            class="mx-2" title="Permissions"><i
+                                                                class="fas fa-key"></i></a>
+                                                        @if ($user->id !== auth()->id())
+                                                            <span class="text-light">|</span>
+                                                            <form action="{{ route('user-management.destroy', $user) }}"
+                                                                method="POST" style="display:inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-link text-danger p-0 m-0 align-baseline mx-2"
+                                                                    style="font-size:inherit;" title="Delete"
+                                                                    onclick="return confirm('Are you sure you want to delete this user?')">
+                                                                    <i class="fas fa-trash m-0"></i> </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @empty

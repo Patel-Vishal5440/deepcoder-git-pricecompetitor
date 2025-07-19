@@ -16,12 +16,14 @@
                             <dt class="col-sm-4">Role</dt>
                             <dd class="col-sm-8">
                                 @if ($user->role)
-                                <span class="badge-lg border border-primary text-primary rounded px-3 py-1" style="font-size: 12px; font-weight: 500;">
-                                    {{ strtolower($user->role->name) }}
-                                </span>
-                            @else
-                                <span class="badge-lg border border-danger text-danger rounded px-3 py-1"
-                                    style="font-size: 12px; font-weight: 500;">No Role Assigned</span>
+                                    <span class="badge-lg text-primary rounded px-3 py-1"
+                                        style="font-size: 12px;font-weight: 500;background-color: #5f63f221;">
+                                        {{ strtolower($user->role->name) }}
+                                    </span>
+                                @else
+                                    <span class="badge-lg text-danger rounded px-3 py-1"
+                                        style="font-size: 12px;font-weight: 500;background-color: #ff4d4f21;">Unassigned
+                                        Role</span>
                                 @endif
                             </dd>
 

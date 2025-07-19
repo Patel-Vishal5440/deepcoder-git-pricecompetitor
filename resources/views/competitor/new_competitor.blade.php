@@ -23,7 +23,8 @@
                                         <div class="text-danger" id="name-error"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="website" class="color-dark fs-14 fw-500 align-center">Website<span class="text-danger">*</span></label>
+                                        <label for="website" class="color-dark fs-14 fw-500 align-center">Website<span
+                                                class="text-danger">*</span></label>
                                         <input type="url" class="form-control ih-medium ip-gray radius-xs b-light px-15"
                                             name="website" id="website" value="{{ old('website') }}"
                                             placeholder="Website URL">
@@ -54,18 +55,15 @@
                                         @endif
                                         <div class="text-danger" id="price_class_name-error"></div>
                                     </div>
-                                    <div class="card-footer">
-                                        <div class="row justify-content-end align-items-center">
-                                            <div class="layout-button mt-25 d-flex justify-content-end">
-                                                <button type="button" onclick="window.location='/competitor/list'"
-                                                    class="btn btn-danger btn-squared">Cancel</button>
-                                                <button type="submit" class="btn btn-success btn-squared">Save</button>
-                                            </div>
-                                        </div>
-                                        {{-- </div> --}}
-                                    </div>
-                                </div>
+                            </div>
                             </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-end">
+                                <button type="button" onclick="window.location='/competitor/list'"
+                                    class="btn btn-light px-4 mx-1">Cancel</button>
+                                <button type="submit" class="btn btn-primary px-4 mx-1">Save</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -192,7 +190,7 @@
                 }
             }
 
-            
+
             function validateStatus() {
                 const status = statusInput.value;
                 const errorElement = document.getElementById('status-error');

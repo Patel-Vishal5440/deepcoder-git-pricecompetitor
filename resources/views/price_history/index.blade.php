@@ -6,10 +6,13 @@
                 <div class="col-lg-12 mb-30">
                     <div class="card mt-4">
                         <div class="card-body p-0">
-                            <div class="color-dark fw-500 mt-15 mx-4">
-                                <div class="input-container icon-left position-relative">
+                            <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
+                                <div class="input-container icon-left icon-right position-relative">
                                     <span class="input-icon icon-left">
                                         <span data-feather="search"></span>
+                                    </span>
+                                    <span class="input-icon icon-right" onclick="clearSearch()">
+                                        <i data-feather="x" class="text-muted"></i>
                                     </span>
                                     <input type="text" id="search" class="form-control form-control-default"
                                         placeholder="Search price history..." style="width: 250px;">

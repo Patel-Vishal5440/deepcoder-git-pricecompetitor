@@ -21,7 +21,7 @@
                                         style="width: 250px;" value="{{ request('search') }}">
                                 </form>
                                 <div>
-                                    <a href="{{ route('permissions.create') }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('permissions.create') }}" class="btn btn-outline-primary">
                                         <i class="fas fa-plus"></i> Create Permission
                                     </a>
                                 </div>
@@ -53,37 +53,51 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center align-middle">
-                                                    {{ $permission->is_active ? 'Active' : 'Inactive' }}</td>
+                                                @if ($permission->is_active == 'Active')
+                                                    <span class="badge-lg rounded px-3 py-1"
+                                                        style="font-size: 12px; font-weight: 500; color: #198754; background-color: #30ff302b;">Active
+                                                    </span>
+                                                    @else
+                                                    <span class="badge-lg rounded px-3 py-1"
+                                                        style="font-size: 12px; font-weight: 500; color: #dc3545; background-color: #ffcccc85;">Inactive
+                                                    </span>
+                                                @endif
+                                                </td>
                                                 <td class="text-center align-middle">
-                                                    <a href="{{ route('permissions.show', $permission) }}"
-                                                        title="View"><i class="fas fa-eye"></i></a>
-                                                    |
-                                                    <a href="{{ route('permissions.edit', $permission) }}"
-                                                        title="Edit"><i class="fas fa-edit"></i></a>
-                                                    <form action="{{ route('permissions.toggle-status', $permission) }}"
-                                                        method="POST" style="display:inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline"
-                                                            style="font-size:inherit;"
-                                                            title="{{ $permission->is_active ? 'Deactivate' : 'Activate' }}">
-                                                            <i
-                                                                class="fas fa-{{ $permission->is_active ? 'ban' : 'check' }}"></i>
-                                                            {{ $permission->is_active ? 'Deactivate' : 'Activate' }}
-                                                        </button>
-                                                    </form>
-                                                    @if ($permission->roles->count() == 0)
-                                                        <form action="{{ route('permissions.destroy', $permission) }}"
-                                                            method="POST" style="display:inline">
+                                                    <div class="d-inline-flex gap-2 align-items-center">
+                                                        <a href="{{ route('permissions.show', $permission) }}"
+                                                            class="mx-2" title="View"><i class="fas fa-eye"></i></a>
+                                                        <span class="text-light">|</span>
+                                                        <a href="{{ route('permissions.edit', $permission) }}"
+                                                            class="mx-2" title="Edit"><i class="fas fa-edit"></i></a>
+                                                        <span class="text-light">|</span>
+                                                        @if ($permission->roles->count() == 0)
+                                                            <form action="{{ route('permissions.destroy', $permission) }}"
+                                                                method="POST" style="display:inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-link text-danger p-0 m-0 align-baseline mx-2"
+                                                                    style="font-size:inherit;" title="Delete">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                            <span class="text-light">|</span>
+                                                        @endif
+                                                        <form
+                                                            action="{{ route('permissions.toggle-status', $permission) }}"
+                                                            method="POST">
                                                             @csrf
-                                                            @method('DELETE')
+                                                            @method('PATCH')
                                                             <button type="submit"
-                                                                class="btn btn-link text-danger p-0 m-0 align-baseline"
-                                                                style="font-size:inherit;" title="Delete">
-                                                                <i class="fas fa-trash"></i> Delete
+                                                                class="btn btn-link p-0 m-0 align-baseline mx-2"
+                                                                style="font-size:inherit;"
+                                                                title="{{ $permission->is_active ? 'Deactivate' : 'Activate' }}">
+                                                                <i
+                                                                    class="fas fa-{{ $permission->is_active ? 'ban' : 'check' }}"></i>
                                                             </button>
                                                         </form>
-                                                    @endif
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @empty
