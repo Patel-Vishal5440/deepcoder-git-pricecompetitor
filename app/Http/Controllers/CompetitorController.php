@@ -55,6 +55,7 @@ class CompetitorController extends Controller {
      * @return \Illuminate\Http\Response
      */
      public function store(Request $request){
+        $request['status'] = 1;
          $validators = Validator::make($request->all(),[
              'name'=>'required|string|max:255',
              'website'=>'required|url|max:255',
@@ -62,6 +63,7 @@ class CompetitorController extends Controller {
              'price_class_name'=>'nullable|string|max:255',
              'status'=>'required|in:1,0'
          ]);
+         
 
          if($validators->fails()){
              return redirect()->route('competitor.create')->withErrors($validators)->withInput();
@@ -98,6 +100,7 @@ class CompetitorController extends Controller {
      * @return \Illuminate\Http\Response
      */
      public function update(Request $request,$id){
+        $request['status'] = 1;
         $validators = Validator::make($request->all(),[
             'name'=>'required|string|max:255',
             'website'=>'nullable|url|max:255',
