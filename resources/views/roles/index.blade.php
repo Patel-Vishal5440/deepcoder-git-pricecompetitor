@@ -1,108 +1,62 @@
 @extends('layouts.app')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ mix('css/dataTables.bootstrap5.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/buttons.bootstrap5.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/datatable-common.css') }}">
+@endsection
+
 @section('content')
     <div class="contents">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
+                    <div class="card mt-4">
                         <div class="card-body p-0">
-                            <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
-                                <form action="{{ route('roles.index') }}" method="GET"
-                                    class="input-container icon-left icon-right position-relative">
+                            <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
+                                <div class="input-container icon-left icon-right position-relative">
                                     <span class="input-icon icon-left">
                                         <span data-feather="search"></span>
                                     </span>
-                                    <span class="input-icon icon-right" onclick="clearSearch()">
+                                    <span class="input-icon icon-right" onclick="clearSearch()" style="cursor: pointer;">
                                         <i data-feather="x" class="text-muted"></i>
                                     </span>
-                                    <input type="text" name="search" id="search"
-                                        class="form-control form-control-default" placeholder="Search roles..."
-                                        style="width: 250px;" value="{{ request('search') }}">
-                                </form>
-                                <div>
+                                    <input type="text" id="search" class="form-control form-control-default" 
+                                           placeholder="Search roles by name or description" 
+                                           style="width: 300px;" maxlength="255" autocomplete="off">
+                                </div>
+                                <div class="action-btn">
                                     <a href="{{ route('roles.create') }}" class="btn btn-outline-primary">
                                         <i class="fas fa-plus"></i> Create Role
                                     </a>
                                 </div>
                             </div>
-                            <div class="table-responsive p-4">
-                                <table class="table mb-0">
-                                    <thead>
-                                        <tr class="userDatatable-header">
-                                            <th class="text-center align-middle">Name</th>
-                                            <th class="text-center align-middle">Description</th>
-                                            <th class="text-center align-middle">Permissions</th>
-                                            <th class="text-center align-middle">Users</th>
-                                            <th class="text-center align-middle">Status</th>
-                                            <th class="text-center align-middle">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($roles as $role)
-                                            <tr>
-                                                <td class="text-center align-middle">{{ ucfirst($role->name) }}</td>
-                                                <td class="text-center align-middle">{{ $role->description ?? '-' }}</td>
-                                                <td class="text-center align-middle">{{ $role->permissions->count() }}</td>
-                                                <td class="text-center align-middle">{{ $role->users->count() }}</td>
-                                                <td class="text-center align-middle">
-                                                    <span class="badge-lg rounded px-3 py-1"
-                                                        style="font-size: 12px; font-weight: 500; color: {{ $role->is_active ? '#198754' : '#dc3545' }}; background-color: {{ $role->is_active ? '#30ff302b' : '#ffcccc85' }};">
-                                                        {{ $role->is_active ? 'Active' : 'Inactive' }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center align-middle">
-                                                    <div class="d-inline-flex gap-2 align-items-center">
-                                                        <a href="{{ route('roles.show', $role) }}" title="View" class="mx-2"><i
-                                                                class="fas fa-eye"></i></a>
-                                                        <span class="text-light">|</span>
-                                                        <a href="{{ route('roles.edit', $role) }}" title="Edit" class="mx-2 "><i
-                                                                class="fas fa-edit"></i></a>
-                                                        <span class="text-light">|</span>
-                                                        @if ($role->users->count() == 0)
-                                                            <form action="{{ route('roles.destroy', $role) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-link text-danger p-0 m-0 align-baseline mx-2"
-                                                                    style="font-size:inherit;" title="Delete">
-                                                                    <i class="fas fa-trash m-0"></i> </button>
-                                                            </form>
-                                                            <span class="text-light">|</span>
-                                                        @endif
-                                                        <form action="{{ route('roles.toggle-status', $role) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit"
-                                                                class="btn btn-link p-0 m-0 align-baseline mx-2"
-                                                                style="font-size:inherit;"
-                                                                title="{{ $role->is_active ? 'Deactivate' : 'Activate' }}">
-                                                                <i
-                                                                    class="fas fa-{{ $role->is_active ? 'ban' : 'check' }}"></i>
-                                                                {{-- {{ $role->is_active ? 'Deactivate' : 'Activate' }} --}}
-                                                            </button>
-                                                        </form>
-                                                    </div>
-
-                                                </td>
+                            <div class="table4 p-25 bg-white mb-30">
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table mb-0 datatable">
+                                        <thead>
+                                            <tr class="userDatatable-header">
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Name</span>
+                                                </th>
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Description</span>
+                                                </th>
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Permissions</span>
+                                                </th>
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Users</span>
+                                                </th>
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Status</span>
+                                                </th>
+                                                <th class="text-center align-middle">
+                                                    <span class="userDatatable-title">Actions</span>
+                                                </th>
                                             </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center">No Role Found!</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center my-3 px-4 pb-3 flex-wrap">
-                                <div class="text-muted small mb-2 mb-md-0">
-                                    Showing {{ $roles->firstItem() }} to {{ $roles->lastItem() }} of
-                                    {{ $roles->total() }} results
-                                </div>
-                                <div>
-                                    {{ $roles->appends(request()->except('page'))->links() }}
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -111,4 +65,164 @@
             </div>
         </div>
     </div>
+
+    <div id="loadingIndicator"
+         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div class="spinner-border text-danger" role="status"></div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function showPageLoading() {
+                document.getElementById("loadingIndicator").style.display = "flex";
+            }
+            function hidePageLoading() {
+                document.getElementById("loadingIndicator").style.display = "none";
+            }
+            
+            let table = $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                dom: 'rt<"bottom"lp><"clear">',
+                language: {
+                    emptyTable: `<div class="py-4 text-center text-muted">
+                        <i class="fas fa-shield-alt fa-2x mb-2"></i><br>
+                        <span style="font-size: 1.1em;">No roles found.</span>
+                    </div>`
+                },
+                ajax: {
+                    url: "{{ route('roles.index') }}",
+                    data: function(data) {
+                        hidePageLoading();
+                        data.searchData = $('#search').val();
+                    },
+                    complete: function() {
+                        $('[data-bs-toggle="tooltip"]').tooltip('dispose');
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                        // Re-attach delete form event listeners after data load
+                        attachDeleteFormListeners();
+                    }
+                },
+                columns: [
+                    { data: 'name', name: 'name', className: 'text-center', width: '150px' },
+                    { data: 'description', name: 'description', className: 'text-center', width: '250px' },
+                    { data: 'permissions', name: 'permissions_count', className: 'text-center', width: '100px' },
+                    { data: 'users', name: 'users_count', className: 'text-center', width: '100px' },
+                    { data: 'status', name: 'is_active', className: 'text-center', width: '120px' },
+                    { data: 'actions', name: 'actions', className: 'text-center', searchable: false, width: '200px' },
+                ]
+            });
+
+            $('#search').on('keyup', function() {
+                table.ajax.reload();
+            });
+
+            // Clear search function
+            window.clearSearch = function() {
+                $('#search').val('');
+                table.ajax.reload();
+            };
+
+            // Attach delete form event listeners
+            function attachDeleteFormListeners() {
+                const deleteForms = document.querySelectorAll('.delete-form');
+                deleteForms.forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Submit the form
+                                const formData = new FormData(this);
+                                fetch(this.action, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                                .then(response => {
+                                    if (response.redirected) {
+                                        window.location.href = response.url;
+                                    } else {
+                                        return response.json();
+                                    }
+                                })
+                                .then(data => {
+                                    if (data && data.success) {
+                                        // Reload the table to reflect changes
+                                        table.ajax.reload();
+                                        
+                                        Swal.fire(
+                                            'Deleted!',
+                                            data.message,
+                                            'success'
+                                        );
+                                    } else if (data && !data.success) {
+                                        Swal.fire(
+                                            'Error!',
+                                            data.message,
+                                            'error'
+                                        );
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Delete error:', error);
+                                    Swal.fire(
+                                        'Error!',
+                                        'An error occurred while deleting the role.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Auto-focus search input on page load
+            $('#search').focus();
+
+            // Check for success message from server after deletion
+            @if(session('success'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('success') }}',
+                    icon: 'success',
+                    confirmButtonColor: '#28a745',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            // Check for error message from server
+            @if(session('error'))
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
 @endsection

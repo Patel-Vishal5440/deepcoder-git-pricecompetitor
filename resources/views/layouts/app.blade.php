@@ -20,11 +20,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {{-- Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- SweetAlert2 CSS --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     {{-- Inject:css, Global Theme Styles (used by all pages) --}}
 
     @include('layouts.partials._styles')
     {{-- Includable CSS --}}
     @yield('styles')
+    @yield('additional_styles')
     {{-- Endinject --}}
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/Mobilenzo_Logo_V3_1_.png') }}">
 </head>
@@ -62,6 +65,8 @@
     {{-- Inject:js, Global Theme JS Bundle (used by all pages) --}}
     @yield('mapScript')
     @include('layouts.partials._scripts')
+    {{-- SweetAlert2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     {{-- Includable JS --}}
     <script src="{{ mix('js/alpinejs.cdn.min.js') }}"></script>
     

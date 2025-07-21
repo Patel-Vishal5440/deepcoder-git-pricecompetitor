@@ -27,13 +27,13 @@
                 auth()->user()->isAdmin() ||
                 auth()->user()->hasPermission('user.view') ||
                 auth()->user()->hasPermission('role.view') ||
-                auth()->user()->hasPermission('permission.view')
+                auth()->user()->hasPermission('permission.view') ||
+                auth()->user()->hasPermission('cron.view')
             )
                 <li class="menu-title mt-3">
                     <span>Management</span>
                 </li>
             @endif
-
             @if(auth()->user()->isAdmin() || auth()->user()->hasPermission('user.view'))
                 <li>
                     <a href="{{ route('user-management.index') }}" class="{{ request()->is('user-management*') ? 'active' : '' }}">
@@ -55,6 +55,14 @@
                     <a href="{{ route('permissions.index') }}" class="{{ request()->is('permissions*') ? 'active' : '' }}">
                         <span data-feather="key" class="nav-icon"></span>
                         <span class="menu-text">Permission Management</span>
+                    </a>
+                </li>
+            @endif
+            @if(auth()->user()->isAdmin() || auth()->user()->hasPermission('cron.view'))
+                <li>
+                    <a href="{{ route('cron-jobs.index') }}" class="{{ request()->is('cron-jobs*') ? 'active' : '' }}">
+                        <span data-feather="clock" class="nav-icon"></span>
+                        <span class="menu-text">Cron Jobs</span>
                     </a>
                 </li>
             @endif

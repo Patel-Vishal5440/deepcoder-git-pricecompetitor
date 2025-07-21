@@ -9,75 +9,56 @@
 @endsection
 
 @section('content')
-    <div class="contents">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mt-4">
-                        <div class="card-body p-0">
-                            <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
+<div class="contents">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mt-3" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
+                    <div class="card-body p-3">
+                                                    <div class="color-dark fw-500 d-flex justify-content-start mt-15 mx-4">
                                 <div class="input-container icon-left icon-right position-relative">
                                     <span class="input-icon icon-left">
                                         <span data-feather="search"></span>
                                     </span>
-                                    <span class="input-icon icon-right" onclick="clearSearch()" style="cursor: pointer;">
+                                    <span class="input-icon icon-right" onclick="clearSearch()">
                                         <i data-feather="x" class="text-muted"></i>
                                     </span>
-                                    <input type="text" id="search" class="form-control form-control-default" 
-                                           placeholder="Search permissions by name or description" 
-                                           style="width: 300px;" maxlength="255" autocomplete="off">
+                                    <input type="text" id="search" name="search" data-table="datatable"
+                                        autocomplete="off"
+                                        class="form-control form-control-solid w-250px ps-12 table_search"
+                                        placeholder="Search Cron Jobs">
                                 </div>
-                                <div class="action-btn">
-                                    <a href="{{ route('permissions.create') }}" class="btn btn-outline-primary">
-                                        <i class="fas fa-plus"></i> Create Permission
+                                <div class="action-btn ms-auto">
+                                    <a href="{{ route('cron-jobs.create') }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-plus"></i> Create Cron Job
                                     </a>
                                 </div>
                             </div>
-                            <div class="table4 p-25 bg-white mb-30">
-                                <div class="table-responsive">
-                                    <table id="datatable" class="table mb-0 datatable">
-                                        <thead>
-                                            <tr class="userDatatable-header">
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Name</span>
-                                                </th>
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Description</span>
-                                                </th>
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Group</span>
-                                                </th>
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Assigned Roles</span>
-                                                </th>
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Status</span>
-                                                </th>
-                                                <th class="text-center align-middle">
-                                                    <span class="userDatatable-title">Actions</span>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+                        <div class="table4 p-25 bg-white mb-30">
+                            <div class="table-responsive" style="overflow-x:auto;">
+                                <table id="datatable" class="table mb-0 datatable">
+                                    <thead>
+                                        <tr class="userDatatable-header">
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Description</th>
+                                            <th class="text-center">Schedule</th>
+                                            <th class="text-center">Command</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Last Run</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="loadingIndicator"
-         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-        <div class="spinner-border text-danger" role="status"></div>
-    </div>
-@endsection
+</div>
 
 <div id="loadingIndicator"
      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
     <div class="spinner-border text-danger" role="status"></div>
-    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -100,17 +81,17 @@ $(document).ready(function() {
     let table = $('#datatable').DataTable({
         processing: true,
         serverSide: true,
-        searching: false,   
+        searching: false,
         ordering: false,
         dom: 'rt<"bottom"lp><"clear">',
         language: {
             emptyTable: `<div class="py-4 text-center text-muted">
-                <i class="fas fa-shield-alt fa-2x mb-2"></i><br>
-                <span style="font-size: 1.1em;">No permissions found.</span>
+                <i class="fas fa-clock fa-2x mb-2"></i><br>
+                <span style="font-size: 1.1em;">No cron jobs found.</span>
             </div>`
         },
         ajax: {
-            url: "{{ route('permissions.index') }}",
+            url: "{{ route('cron-jobs.index') }}",
             data: function(data) {
                 hidePageLoading();
                 data.searchData = $('#search').val();
@@ -123,9 +104,10 @@ $(document).ready(function() {
         columns: [
             { data: 'name', name: 'name', className: 'text-center' },
             { data: 'description', name: 'description', className: 'text-center' },
-            { data: 'group', name: 'group', className: 'text-center' },
-            { data: 'assigned_roles', name: 'assigned_roles', className: 'text-center' },
+            { data: 'schedule', name: 'schedule', className: 'text-center' },
+            { data: 'command', name: 'command', className: 'text-center' },
             { data: 'status', name: 'status', className: 'text-center' },
+            { data: 'last_run', name: 'last_run', className: 'text-center' },
             { data: 'actions', name: 'actions', className: 'text-center', searchable: false }
         ]
     });
@@ -143,7 +125,7 @@ $(document).ready(function() {
     // Delete confirmation
     $(document).on('submit', '.delete-form', function(e) {
         e.preventDefault();
-        if (confirm('Are you sure you want to delete this permission? This action cannot be undone.')) {
+        if (confirm('Are you sure you want to delete this cron job? This action cannot be undone.')) {
             this.submit();
         }
     });
@@ -191,9 +173,13 @@ code {
     color: #495057;
 }
 
-.userDatatable-content small {
-    font-size: 0.75em;
-    color: #6c757d;
-}
+        .userDatatable-content small {
+            font-size: 0.75em;
+            color: #6c757d;
+        }
+
+        .dataTables_wrapper .dataTable tbody tr:hover {
+            background-color: #f8f9fa;
+        }
 </style>
-@endpush
+@endpush 

@@ -4,51 +4,10 @@
     <link rel="stylesheet" href="{{ mix('css/dataTables.bootstrap5.css') }}">
     <link rel="stylesheet" href="{{ mix('css/buttons.bootstrap5.css') }}">
     <link rel="stylesheet" href="{{ mix('css/toastr.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/datatable-common.css') }}">
     <style>
-        table.dataTable thead th,
-        table.dataTable tbody td {
-            padding: 6px 8px !important; /* Reduce padding */
-            vertical-align: middle !important;
-            text-align: center !important;
-            white-space: nowrap;
-        }
-
-        th, td {
-            font-size: 14px;
-            max-width: 120px; /* Adjust as needed */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        th.text-center, td.text-center {
-            text-align: center !important;
-        }
-
-        th.text-start, td.text-start {
-            text-align: left !important;
-        }
-
-        .product-name-wrap {
-            max-width: 250px;
-            white-space: normal !important;
-            word-break: break-word;
-            text-align: left !important;
-        }
-        .tooltip-long {
-            max-width: 300px !important;
-        }
-        .tooltip-long .tooltip-inner {
-            max-width: 300px !important;
-            text-align: left;
-            word-break: break-word;
-        }
         .removeuppercase {
             text-transform: none !important;
-        }
-        th.userDatatable-header, 
-        #datatable thead th {
-            height: 40px !important;   /* Adjust the value as needed */
-            vertical-align: middle !important;
         }
     </style>
 @endsection
@@ -250,6 +209,12 @@ $(document).ready(function() {
     $('#search').on('keyup', function() {
         table.ajax.reload();
     });
+
+    // Clear search function
+    window.clearSearch = function() {
+        $('#search').val('');
+        table.ajax.reload();
+    };
 
     $(document).on("click", ".edit-price-btn", function() {
         $('#modalPriceProductId').val($(this).data("product-id"));

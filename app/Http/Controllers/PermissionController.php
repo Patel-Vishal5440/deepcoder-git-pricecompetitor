@@ -3,22 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
+use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
 {
+    protected $permissionRepository;
+
+    public function __construct(PermissionRepository $permissionRepository)
+    {
+        $this->permissionRepository = $permissionRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(PermissionRepository $permissionRepository, Request $request)
     {
         $pageTitle = 'Permissions Management';
         $pageDescription = 'Manage system permissions';
-        
-        $permissions = Permission::with('roles')->paginate(10); // or any number per page
-        
-        return view('permissions.index', compact('pageTitle', 'pageDescription', 'permissions'));
+
+        if (request()->ajax()) {
+            $this->permissionRepository = $permissionRepository;
+            return $this->permissionRepository->dataSource($request);
+        }
+
+        return view('permissions.index', [
+            'pageTitle' => $pageTitle,
+            'pageDescription' => $pageDescription
+        ]);
     }
 
     /**
@@ -29,7 +43,9 @@ class PermissionController extends Controller
         $pageTitle = 'Create Permission';
         $pageDescription = 'Create a new system permission';
         
-        return view('permissions.create', compact('pageTitle', 'pageDescription'));
+        $permission = null; // Pass null for create operation
+        
+        return view('permissions.create', compact('pageTitle', 'pageDescription', 'permission'));
     }
 
     /**
@@ -40,7 +56,8 @@ class PermissionController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:permissions,name',
             'description' => 'nullable|string',
-            'group' => 'nullable|string|max:255'
+            'group' => 'nullable|string|max:255',
+            'is_active' => 'boolean'
         ]);
 
         if ($validator->fails()) {
@@ -53,7 +70,7 @@ class PermissionController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'group' => $request->group,
-            'is_active' => true
+            'is_active' => $request->has('is_active')
         ]);
 
         return redirect()->route('permissions.index')
@@ -81,7 +98,7 @@ class PermissionController extends Controller
         $pageTitle = 'Edit Permission';
         $pageDescription = 'Edit permission information';
         
-        return view('permissions.edit', compact('pageTitle', 'pageDescription', 'permission'));
+        return view('permissions.create', compact('pageTitle', 'pageDescription', 'permission'));
     }
 
     /**
@@ -92,7 +109,8 @@ class PermissionController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
             'description' => 'nullable|string',
-            'group' => 'nullable|string|max:255'
+            'group' => 'nullable|string|max:255',
+            'is_active' => 'boolean'
         ]);
 
         if ($validator->fails()) {
@@ -105,6 +123,7 @@ class PermissionController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'group' => $request->group,
+            'is_active' => $request->has('is_active')
         ]);
 
         return redirect()->route('permissions.index')

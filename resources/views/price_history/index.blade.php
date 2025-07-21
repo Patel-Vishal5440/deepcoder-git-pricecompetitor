@@ -1,47 +1,53 @@
 @extends('layouts.app')
+
+@section('styles')
+    <link rel="stylesheet" href="{{ mix('css/dataTables.bootstrap5.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/buttons.bootstrap5.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/datatable-common.css') }}">
+@endsection
+
 @section('content')
     <div class="contents">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12 mb-30">
+                <div class="col-12">
                     <div class="card mt-4">
                         <div class="card-body p-0">
-                            <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
+                            <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
                                 <div class="input-container icon-left icon-right position-relative">
                                     <span class="input-icon icon-left">
                                         <span data-feather="search"></span>
                                     </span>
-                                    <span class="input-icon icon-right" onclick="clearSearch()">
+                                        <span class="input-icon icon-right" onclick="clearSearch()" style="cursor: pointer;">
                                         <i data-feather="x" class="text-muted"></i>
                                     </span>
-                                    <input type="text" id="search" class="form-control form-control-default"
-                                        placeholder="Search price history..." style="width: 250px;">
+                                    <input type="text" id="search" class="form-control form-control-default" 
+                                           placeholder="Search price history..." style="width: 300px;" 
+                                           maxlength="255" autocomplete="off">
                                 </div>
                             </div>
                             <div class="table4 p-25 bg-white mb-30">
                                 <div class="table-responsive">
-                                    <table class="table mb-0" id="datatable">
+                                    <table id="datatable" class="table mb-0 datatable">
                                         <thead>
                                             <tr class="userDatatable-header">
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Date</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Product Name</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Old Price</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">New Price</span>
                                                 </th>
-                                                <th>
+                                                <th class="text-center align-middle">
                                                     <span class="userDatatable-title">Performed By</span>
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -51,81 +57,73 @@
             </div>
         </div>
     </div>
+
+    <div id="loadingIndicator"
+         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div class="spinner-border text-danger" role="status"></div>
+    </div>
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Load data on page load
-            loadPriceHistoryData();
-
-            // Search functionality
-            $('#search').on('keyup', function() {
-                var searchTerm = $(this).val();
-                loadPriceHistoryData(searchTerm);
+            function showPageLoading() {
+                document.getElementById("loadingIndicator").style.display = "flex";
+            }
+            function hidePageLoading() {
+                document.getElementById("loadingIndicator").style.display = "none";
+            }
+            
+            let table = $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                dom: 'rt<"bottom"lp><"clear">',
+                language: {
+                    emptyTable: `<div class="py-4 text-center text-muted">
+                        <i class="fas fa-history fa-2x mb-2"></i><br>
+                        <span style="font-size: 1.1em;">No price history found.</span>
+                    </div>`
+                },
+                ajax: {
+                    url: "{{ route('price_history.list') }}",
+                    data: function(data) {
+                        hidePageLoading();
+                        data.searchData = $('#search').val();
+                    },
+                    complete: function() {
+                        $('[data-bs-toggle="tooltip"]').tooltip('dispose');
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+            }
+                },
+                columns: [
+                    { data: 'date', name: 'created_at', className: 'text-center', width: '150px' },
+                    { data: 'product_name', name: 'product.name', className: 'text-center product-name-wrap', width: '250px' },
+                    { data: 'price_old', name: 'price_old', className: 'text-center', width: '120px' },
+                    { data: 'price_new', name: 'price_new', className: 'text-center', width: '120px' },
+                    { data: 'performed_by', name: 'user.name', className: 'text-center', width: '150px' },
+                ]
             });
 
-            function loadPriceHistoryData(searchTerm = '') {
-                $.ajax({
-                    url: "{{ route('price_history.list') }}",
-                    type: 'GET',
-                    data: {
-                        ajax: true,
-                        searchData: searchTerm
-                    },
-                    beforeSend: function() {
-                        $('#datatable tbody').html(
-                            '<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</td></tr>'
-                        );
-                    },
-                    success: function(response) {
-                        var tbody = $('#datatable tbody');
-                        tbody.empty();
+            $('#search').on('keyup', function() {
+                table.ajax.reload();
+    });
 
-                        if (response.data && response.data.length > 0) {
-                            $.each(response.data, function(index, item) {
-                                var priceChangeClass = '';
-                                var priceChangeIcon = '';
+    // Clear search function
+    window.clearSearch = function() {
+                $('#search').val('');
+                table.ajax.reload();
+            };
 
-                                if (parseFloat(item.price_new.replace(',', '')) < parseFloat(
-                                        item.price_old.replace(',', ''))) {
-                                    priceChangeClass = 'text-success';
-                                    priceChangeIcon = '<i class="la la-arrow-down"></i>';
-                                } else if (parseFloat(item.price_new.replace(',', '')) >
-                                    parseFloat(item.price_old.replace(',', ''))) {
-                                    priceChangeClass = 'text-danger';
-                                    priceChangeIcon = '<i class="la la-arrow-up"></i>';
-                                }
-
-                                var row = '<tr>' +
-                                    '<td><div class="userDatatable-content">' + item.date +
-                                    '</div></td>' +
-                                    '<td><div class="userDatatable-content"><strong>' + item
-                                    .product_name + '</strong></div></td>' +
-                                    '<td><div class="userDatatable-content">$' + item
-                                    .price_old + '</div></td>' +
-                                    '<td><div class="userDatatable-content ' +
-                                    priceChangeClass + '">$' + item.price_new + ' ' +
-                                    priceChangeIcon + '</div></td>' +
-                                    '<td><div class="userDatatable-content">' + item
-                                    .performed_by + '</div></td>' +
-                                    '</tr>';
-                                tbody.append(row);
-                            });
-                        } else {
-                            tbody.append(
-                                '<tr><td colspan="5" class="text-center"><p class="text-muted">No price history found</p></td></tr>'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error loading price history:', error);
-                        $('#datatable tbody').html(
-                            '<tr><td colspan="5" class="text-center"><p class="text-danger">Error loading data. Please try again.</p></td></tr>'
-                        );
-                    }
+    // Auto-focus search input on page load
+            $('#search').focus();
                 });
-            }
-        });
     </script>
 @endsection

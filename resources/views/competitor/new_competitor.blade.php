@@ -6,17 +6,21 @@
                 <div class="col-lg-8">
                     <div class="card card-Vertical card-default card-md mb-4">
                         <div class="card-header py-4">
-                            <h4>New Competitor Form</h4>
+                            <h4>{{ isset($competitor) ? 'Edit Competitor Form' : 'New Competitor Form' }}</h4>
                         </div>
                         <div class="card-body pb-md-30">
                             <div class="Vertical-form">
-                                <form action="{{ route('competitor.store') }}" method="POST" id="competitorForm">
+                                <form action="{{ isset($competitor) ? route('competitor.update', $competitor->id) : route('competitor.store') }}" method="POST" id="competitorForm">
                                     @csrf
+                                    @if(isset($competitor))
+                                        @method('PUT')
+                                    @endif
+                                    
                                     <div class="form-group">
                                         <label for="name" class="color-dark fs-14 fw-500 align-center">Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                            name="name" value="{{ old('name') }}" id="name" placeholder="Name">
+                                            name="name" value="{{ old('name', isset($competitor) ? $competitor->name : '') }}" id="name" placeholder="Name">
                                         @if ($errors->has('name'))
                                             <p class="text-danger">{{ $errors->first('name') }}</p>
                                         @endif
@@ -26,7 +30,7 @@
                                         <label for="website" class="color-dark fs-14 fw-500 align-center">Website<span
                                                 class="text-danger">*</span></label>
                                         <input type="url" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                            name="website" id="website" value="{{ old('website') }}"
+                                            name="website" id="website" value="{{ old('website', isset($competitor) ? $competitor->website : '') }}"
                                             placeholder="Website URL">
                                         @if ($errors->has('website'))
                                             <p class="text-danger">{{ $errors->first('website') }}</p>
@@ -37,7 +41,7 @@
                                         <label for="shortname" class="color-dark fs-14 fw-500 align-center">Short Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                            name="shortname" value="{{ old('shortname') }}" id="shortname"
+                                            name="shortname" value="{{ old('shortname', isset($competitor) ? $competitor->shortname : '') }}" id="shortname"
                                             placeholder="Short Name">
                                         @if ($errors->has('shortname'))
                                             <p class="text-danger">{{ $errors->first('shortname') }}</p>
@@ -49,21 +53,20 @@
                                             Class Name <span class="text-danger"></span></label>
                                         <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
                                             name="price_class_name" id="price_class_name"
-                                            value="{{ old('price_class_name') }}" placeholder="Price Class Name">
+                                            value="{{ old('price_class_name', isset($competitor) ? $competitor->price_class_name : '') }}" placeholder="Price Class Name">
                                         @if ($errors->has('price_class_name'))
                                             <p class="text-danger">{{ $errors->first('price_class_name') }}</p>
                                         @endif
                                         <div class="text-danger" id="price_class_name-error"></div>
                                     </div>
+                                    
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" onclick="window.location='/competitor/list'"
+                                            class="btn btn-light px-4 mx-1">Cancel</button>
+                                        <button type="submit" class="btn btn-primary px-4 mx-1">{{ isset($competitor) ? 'Update' : 'Save' }}</button>
+                                    </div>
                             </div>
                             </form>
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex justify-content-end">
-                                <button type="button" onclick="window.location='/competitor/list'"
-                                    class="btn btn-light px-4 mx-1">Cancel</button>
-                                <button type="submit" class="btn btn-primary px-4 mx-1">Save</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -79,7 +82,7 @@
             const websiteInput = document.getElementById('website');
             const shortnameInput = document.getElementById('shortname');
             const priceClassNameInput = document.getElementById('price_class_name');
-            const statusInput = document.getElementById('status');
+            const isEditMode = {{ isset($competitor) ? 'true' : 'false' }};
 
             // Real-time validation
             nameInput.addEventListener('blur', function() {
@@ -98,10 +101,6 @@
                 validatePriceClassName();
             });
 
-            statusInput.addEventListener('change', function() {
-                validateStatus();
-            });
-
             // Form submission validation
             form.addEventListener('submit', function(e) {
                 let isValid = true;
@@ -110,7 +109,6 @@
                 if (!validateWebsite()) isValid = false;
                 if (!validateShortname()) isValid = false;
                 if (!validatePriceClassName()) isValid = false;
-                if (!validateStatus()) isValid = false;
 
                 if (!isValid) {
                     e.preventDefault();
@@ -141,7 +139,11 @@
                 const errorElement = document.getElementById('website-error');
                 const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
-                if (website !== '' && !urlPattern.test(website)) {
+                if (website === '') {
+                    errorElement.textContent = 'Website is required';
+                    websiteInput.classList.add('is-invalid');
+                    return false;
+                } else if (!urlPattern.test(website)) {
                     errorElement.textContent = 'Please enter a valid website URL';
                     websiteInput.classList.add('is-invalid');
                     return false;
@@ -175,33 +177,13 @@
                 const priceClassName = priceClassNameInput.value.trim();
                 const errorElement = document.getElementById('price_class_name-error');
 
-                if (priceClassName === '') {
-                    errorElement.textContent = 'Price class name is required';
-                    priceClassNameInput.classList.add('is-invalid');
-                    return false;
-                } else if (priceClassName.length > 255) {
+                if (priceClassName.length > 255) {
                     errorElement.textContent = 'Price class name must not exceed 255 characters';
                     priceClassNameInput.classList.add('is-invalid');
                     return false;
                 } else {
                     errorElement.textContent = '';
                     priceClassNameInput.classList.remove('is-invalid');
-                    return true;
-                }
-            }
-
-
-            function validateStatus() {
-                const status = statusInput.value;
-                const errorElement = document.getElementById('status-error');
-
-                if (status === '') {
-                    errorElement.textContent = 'Status is required';
-                    statusInput.classList.add('is-invalid');
-                    return false;
-                } else {
-                    errorElement.textContent = '';
-                    statusInput.classList.remove('is-invalid');
                     return true;
                 }
             }

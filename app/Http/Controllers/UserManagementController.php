@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Repositories\UserManagementRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserManagementController extends Controller
 {
+    protected $userManagementRepository;
+
+    public function __construct(UserManagementRepository $userManagementRepository)
+    {
+        $this->userManagementRepository = $userManagementRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -18,11 +26,19 @@ class UserManagementController extends Controller
         $pageTitle = 'User Management';
         $pageDescription = 'Manage system users and their roles';
         
+        // If AJAX request, return DataTables response
+        if ($request->ajax()) {
+            return $this->userManagementRepository->dataSource($request);
+        }
+        
+        // For non-AJAX requests, return the view with initial data
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 15);
+        
         $query = User::with('role');
         
         // Handle search
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
@@ -32,9 +48,21 @@ class UserManagementController extends Controller
             });
         }
         
-        $users = $query->paginate(15);
+        $users = $query->orderBy('created_at', 'desc')->paginate($perPage);
         
-        return view('user-management.index', compact('pageTitle', 'pageDescription', 'users'));
+        // Get total count for display (without search filter)
+        $totalUsers = User::count();
+        $filteredCount = $users->total();
+        
+        return view('user-management.index', compact(
+            'pageTitle', 
+            'pageDescription', 
+            'users', 
+            'search', 
+            'perPage',
+            'totalUsers',
+            'filteredCount'
+        ));
     }
 
     /**
@@ -114,7 +142,7 @@ class UserManagementController extends Controller
         
         $roles = Role::where('is_active', true)->get();
         
-        return view('user-management.edit', compact('pageTitle', 'pageDescription', 'user', 'roles'));
+        return view('user-management.create', compact('pageTitle', 'pageDescription', 'user', 'roles'));
     }
 
     /**
@@ -170,11 +198,24 @@ class UserManagementController extends Controller
     {
         // Prevent deleting the current user
         if ($user->id === auth()->id()) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You cannot delete your own account.'
+                ], 403);
+            }
             return redirect()->route('user-management.index')
                 ->with('error', 'You cannot delete your own account.');
         }
 
         $user->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully.'
+            ]);
+        }   
 
         return redirect()->route('user-management.index')
             ->with('success', 'User deleted successfully.');

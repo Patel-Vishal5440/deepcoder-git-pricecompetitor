@@ -7,12 +7,14 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\CronJobController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\OdooController;
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ComponentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,8 +94,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/new', [CompetitorController::class, 'create'])->name('competitor.create');
         Route::post('/store', [CompetitorController::class, 'store'])->name('competitor.store');
         Route::get('/edit/{id}', [CompetitorController::class, 'edit'])->name('competitor.edit');
-        Route::post('/update/{id}', [CompetitorController::class, 'update'])->name('competitor.update');
-        Route::post('/delete/{id}', [CompetitorController::class, 'delete'])->name('competitor.delete');
+        Route::put('/update/{id}', [CompetitorController::class, 'update'])->name('competitor.update');
+        Route::delete('/delete/{id}', [CompetitorController::class, 'delete'])->name('competitor.delete');
+        
+        // Test route for debugging
+        Route::get('/test-delete/{id}', [CompetitorController::class, 'testDelete'])->name('competitor.test-delete');
     });
 
     Route::group(['prefix' => 'price-history'], function () {
@@ -113,6 +118,64 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/sync-specific', [ProductController::class, 'syncSpecificProduct'])->name('products.sync-specific');
         // Route::get('/sync-products', [ProductController::class, 'syncProducts']);
         Route::get('/sync-products', [ProductController::class, 'syncProducts'])->name('products.syncProducts');
+    });
+
+    Route::group(['prefix' => 'cron-jobs'], function () {
+        Route::get('/', [CronJobController::class, 'index'])->name('cron-jobs.index');
+        Route::get('/create', [CronJobController::class, 'create'])->name('cron-jobs.create');
+        Route::post('/', [CronJobController::class, 'store'])->name('cron-jobs.store');
+        Route::get('/{job}', [CronJobController::class, 'show'])->name('cron-jobs.show');
+        Route::get('/{job}/edit', [CronJobController::class, 'edit'])->name('cron-jobs.edit');
+        Route::put('/{job}', [CronJobController::class, 'update'])->name('cron-jobs.update');
+        Route::delete('/{job}', [CronJobController::class, 'destroy'])->name('cron-jobs.destroy');
+        Route::patch('/{job}/toggle-status', [CronJobController::class, 'toggleStatus'])->name('cron-jobs.toggle-status');
+    });
+
+    // Component Routes
+    Route::group(['prefix' => 'components'], function () {
+        Route::get('/', [ComponentController::class, 'index'])->name('components.index');
+        Route::get('/avatar', [ComponentController::class, 'avatar'])->name('components.avatar');
+        Route::get('/badge', [ComponentController::class, 'badge'])->name('components.badge');
+        Route::get('/breadcrumbs', [ComponentController::class, 'breadcrumbs'])->name('components.breadcrumbs');
+        Route::get('/buttons', [ComponentController::class, 'buttons'])->name('components.buttons');
+        Route::get('/cards', [ComponentController::class, 'cards'])->name('components.cards');
+        Route::get('/carousel', [ComponentController::class, 'carousel'])->name('components.carousel');
+        Route::get('/checkbox', [ComponentController::class, 'checkbox'])->name('components.checkbox');
+        Route::get('/collapse', [ComponentController::class, 'collapse'])->name('components.collapse');
+        Route::get('/comments', [ComponentController::class, 'comments'])->name('components.comments');
+        Route::get('/dashboard-base', [ComponentController::class, 'dashboardBase'])->name('components.dashboard-base');
+        Route::get('/date-picker', [ComponentController::class, 'datePicker'])->name('components.date-picker');
+        Route::get('/drawer', [ComponentController::class, 'drawer'])->name('components.drawer');
+        Route::get('/drag-drop', [ComponentController::class, 'dragDrop'])->name('components.drag-drop');
+        Route::get('/dropdown', [ComponentController::class, 'dropdown'])->name('components.dropdown');
+        Route::get('/empty', [ComponentController::class, 'empty'])->name('components.empty');
+        Route::get('/grid', [ComponentController::class, 'grid'])->name('components.grid');
+        Route::get('/input', [ComponentController::class, 'input'])->name('components.input');
+        Route::get('/list', [ComponentController::class, 'list'])->name('components.list');
+        Route::get('/menu', [ComponentController::class, 'menu'])->name('components.menu');
+        Route::get('/message', [ComponentController::class, 'message'])->name('components.message');
+        Route::get('/modal', [ComponentController::class, 'modal'])->name('components.modal');
+        Route::get('/notifications', [ComponentController::class, 'notifications'])->name('components.notifications');
+        Route::get('/page-header', [ComponentController::class, 'pageHeader'])->name('components.page-header');
+        Route::get('/pagination', [ComponentController::class, 'pagination'])->name('components.pagination');
+        Route::get('/progressbar', [ComponentController::class, 'progressbar'])->name('components.progressbar');
+        Route::get('/radio', [ComponentController::class, 'radio'])->name('components.radio');
+        Route::get('/rate', [ComponentController::class, 'rate'])->name('components.rate');
+        Route::get('/result', [ComponentController::class, 'result'])->name('components.result');
+        Route::get('/select', [ComponentController::class, 'select'])->name('components.select');
+        Route::get('/skeleton', [ComponentController::class, 'skeleton'])->name('components.skeleton');
+        Route::get('/slider', [ComponentController::class, 'slider'])->name('components.slider');
+        Route::get('/spin', [ComponentController::class, 'spin'])->name('components.spin');
+        Route::get('/statistics', [ComponentController::class, 'statistics'])->name('components.statistics');
+        Route::get('/steps', [ComponentController::class, 'steps'])->name('components.steps');
+        Route::get('/switch', [ComponentController::class, 'switch'])->name('components.switch');
+        Route::get('/tab', [ComponentController::class, 'tab'])->name('components.tab');
+        Route::get('/tag', [ComponentController::class, 'tag'])->name('components.tag');
+        Route::get('/timeline', [ComponentController::class, 'timeline'])->name('components.timeline');
+        Route::get('/timeline2', [ComponentController::class, 'timelineTwo'])->name('components.timeline2');
+        Route::get('/timeline3', [ComponentController::class, 'timelineThree'])->name('components.timeline3');
+        Route::get('/time-picker', [ComponentController::class, 'timePicker'])->name('components.time-picker');
+        Route::get('/uploads', [ComponentController::class, 'uploads'])->name('components.uploads');
     });
 
 });

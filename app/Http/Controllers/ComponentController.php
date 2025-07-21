@@ -354,11 +354,22 @@ class ComponentController extends Controller
      */
     public function pagination()
     {
-
         $pageTitle = 'Pagination';
         $pageDescription = 'Some description for the page';
 
-        return view('components.pagination', compact('pageTitle', 'pageDescription'));
+        // Create a sample paginator for demonstration
+        $items = collect(range(1, 100));
+        $perPage = 10;
+        $currentPage = request()->get('page', 1);
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items->forPage($currentPage, $perPage),
+            $items->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url()]
+        );
+
+        return view('components.pagination_demo', compact('pageTitle', 'pageDescription', 'paginator'));
     }
 
     /**

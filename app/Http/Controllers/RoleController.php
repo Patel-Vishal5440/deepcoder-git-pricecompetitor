@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\Permission;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
+    protected $roleRepository;
+
+    public function __construct(RoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -17,20 +25,40 @@ class RoleController extends Controller
         $pageTitle = 'Roles Management';
         $pageDescription = 'Manage system roles and permissions';
         
+        // If AJAX request, return DataTables response
+        if ($request->ajax()) {
+            return $this->roleRepository->dataSource($request);
+        }
+        
+        // For non-AJAX requests, return the view with initial data
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 15);
+        
         $query = Role::with(['permissions', 'users']);
         
         // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
+        if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
         
-        $roles = $query->paginate(15);
+        $roles = $query->orderBy('created_at', 'desc')->paginate($perPage);
         
-        return view('roles.index', compact('pageTitle', 'pageDescription', 'roles'));
+        // Get total count for display (without search filter)
+        $totalRoles = Role::count();
+        $filteredCount = $roles->total();
+        
+        return view('roles.index', compact(
+            'pageTitle', 
+            'pageDescription', 
+            'roles', 
+            'search', 
+            'perPage',
+            'totalRoles',
+            'filteredCount'
+        ));
     }
 
     /**
@@ -42,8 +70,9 @@ class RoleController extends Controller
         $pageDescription = 'Create a new system role';
         
         $permissions = Permission::where('is_active', true)->get();
+        $role = null; // Pass null for create operation
         
-        return view('roles.create', compact('pageTitle', 'pageDescription', 'permissions'));
+        return view('roles.create', compact('pageTitle', 'pageDescription', 'permissions', 'role'));
     }
 
     /**
@@ -102,7 +131,7 @@ class RoleController extends Controller
         $permissions = Permission::where('is_active', true)->get();
         $role->load('permissions');
         
-        return view('roles.edit', compact('pageTitle', 'pageDescription', 'role', 'permissions'));
+        return view('roles.create', compact('pageTitle', 'pageDescription', 'role', 'permissions'));
     }
 
     /**
