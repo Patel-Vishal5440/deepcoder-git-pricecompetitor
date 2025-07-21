@@ -115,6 +115,7 @@
 <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     function showPageLoading() {
@@ -171,34 +172,44 @@ $(document).ready(function() {
     $(document).on('submit', 'form[action*="competitor/delete"]', function(e) {
         e.preventDefault();
         
-        if (confirm('Are you sure you want to delete this competitor?')) {
-            const form = $(this);
-            const url = form.attr('action');
-            
-            $.ajax({
-                url: url,
-                method: 'DELETE',
-                data: form.serialize(),
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        table.ajax.reload(null, false);
-                    } else {
-                        toastr.error(response.message);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this competitor!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = $(this);
+                const url = form.attr('action');
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            table.ajax.reload(null, false);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        const response = xhr.responseJSON;
+                        if (response && response.message) {
+                            toastr.error(response.message);
+                        } else {
+                            toastr.error('An error occurred while deleting the competitor.');
+                        }
                     }
-                },
-                error: function(xhr) {
-                    const response = xhr.responseJSON;
-                    if (response && response.message) {
-                        toastr.error(response.message);
-                    } else {
-                        toastr.error('An error occurred while deleting the competitor.');
-                    }
+                });
             }
         });
-    }
+    });
 });
-});
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
