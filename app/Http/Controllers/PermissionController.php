@@ -74,7 +74,7 @@ class PermissionController extends Controller
         ]);
 
         return redirect()->route('permissions.index')
-            ->with('success', 'Permission created successfully.');
+            ->with('permission_created_success', 'Permission created successfully.');
     }
 
     /**

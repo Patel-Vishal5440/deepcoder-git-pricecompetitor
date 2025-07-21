@@ -153,7 +153,7 @@ $(document).ready(function() {
             { data: 'shortname', name: 'shortname', className: 'text-center', width: '120px' },
             { data: 'price_class_name', name: 'price_class_name', className: 'text-center', width: '150px' },
             { data: 'status', name: 'status', className: 'text-center', width: '100px' },
-            { data: 'action', name: 'action', className: 'text-center', searchable: false, width: '120px' },
+            { data: 'actions', name: 'actions', className: 'text-center', searchable: false, width: '120px' },
         ]
     });
 

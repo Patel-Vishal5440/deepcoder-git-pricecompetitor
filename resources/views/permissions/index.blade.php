@@ -74,12 +74,6 @@
     </div>
 @endsection
 
-<div id="loadingIndicator"
-     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-    <div class="spinner-border text-danger" role="status"></div>
-    </div>
-@endsection
-
 @section('scripts')
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
@@ -88,6 +82,7 @@
 <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     function showPageLoading() {
@@ -143,11 +138,38 @@ $(document).ready(function() {
     // Delete confirmation
     $(document).on('submit', '.delete-form', function(e) {
         e.preventDefault();
-        if (confirm('Are you sure you want to delete this permission? This action cannot be undone.')) {
-            this.submit();
-        }
+        let form = this;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Are you sure you want to delete this permission? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     });
 });
+</script>
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+        @if(session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+        @if(session('permission_created_success'))
+            toastr.success('{{ session('permission_created_success') }}');
+        @endif
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

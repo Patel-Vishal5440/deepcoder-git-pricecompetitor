@@ -335,5 +335,21 @@ $(document).ready(function() {
 
 });
 </script>
+<script>
+    $(document).ready(function() {
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+        @if(session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+        @if(session('product_created_success'))
+            toastr.success('{{ session('product_created_success') }}');
+        @endif
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

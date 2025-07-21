@@ -42,51 +42,50 @@ class CompetitorRepository
         }
     }
 
+
     public function competitorDataTable($competitor)
     {
         $dataTable = DataTables::of($competitor)
-            ->addColumn('action', function ($competitor) {
-                $editButton = "<a href='" . route('competitor.edit', $competitor->id) . "' 
-                    class='btn btn-icon btn-sm btn-light-primary' 
-                    style='width: 32px; height: 32px; margin-right: 5px;' title='Edit'>
-                    <i class='fas fa-edit fs-6 m-0'></i></a>";
-                
-                $deleteButton = "<form action='" . route('competitor.delete', $competitor->id) . "' 
-                    method='POST' style='display:inline;'>
-                    " . csrf_field() . "
-                    " . method_field('DELETE') . "
-                    <button type='submit' class='btn btn-icon btn-sm btn-light-danger' 
-                        style='width: 32px; height: 32px;' title='Delete'
-                        onclick='return confirm(\"Are you sure you want to delete this competitor?\")'>
-                        <i class='fas fa-trash fs-6 m-0'></i>
-                    </button>
-                </form>";
-                    
-                return $editButton . $deleteButton;
-            })
-            ->addColumn('website_link', function ($competitor) {
-                if ($competitor->website) {
-                    return "<a href='{$competitor->website}' target='_blank' class='text-decoration-none'>
-                        {$competitor->website}
-                    </a>";
+        ->addColumn('website_link', function ($competitor) {
+            if ($competitor->website) {
+                return "<a href='{$competitor->website}' target='_blank' class='text-decoration-none'>
+                    {$competitor->website}
+                </a>";
+            }
+            return "<span class='text-muted'>N/A</span>";
+        })
+        ->addColumn('status', function ($competitor) {
+            return "<span class='badge " . ($competitor->status ? 'bg-success' : 'bg-danger') . "'>" . 
+                ($competitor->status ? 'Active' : 'Inactive') . 
+                "</span>";  
+        })
+        ->editColumn('name', function ($competitor) {
+            return $competitor->name ?? 'N/A';
+        })
+        ->editColumn('shortname', function ($competitor) {
+            return $competitor->shortname ?? 'N/A';
+        })
+        ->editColumn('price_class_name', function ($competitor) {
+            return $competitor->price_class_name ?? 'N/A';
+        })
+        ->addColumn('actions', function ($competitor) {
+            $deleteButton = '';
+            if ($competitor->id !== auth()->id()) {
+                $deleteButton = '<span class="text-light">|</span>
+                        <form action="' . route('competitor.delete', $competitor) . '" method="POST" style="display:inline" class="delete-form">
+                            ' . csrf_field() . '
+                            ' . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-link text-danger p-0 m-0 align-baseline mx-2" style="font-size:inherit;" title="Delete">
+                                <i class="fas fa-trash m-0"></i>
+                            </button>
+                        </form>';
                 }
-                return "<span class='text-muted'>N/A</span>";
-            })
-            ->addColumn('status', function ($competitor) {
-                return "<span class='badge " . ($competitor->status ? 'bg-success' : 'bg-danger') . "'>" . 
-                    ($competitor->status ? 'Active' : 'Inactive') . 
-                    "</span>";  
-            })
-            ->editColumn('name', function ($competitor) {
-                return $competitor->name ?? 'N/A';
-            })
-            ->editColumn('shortname', function ($competitor) {
-                return $competitor->shortname ?? 'N/A';
-            })
-            ->editColumn('price_class_name', function ($competitor) {
-                return $competitor->price_class_name ?? 'N/A';
+                return '<div class="d-inline-flex gap-2 align-items-center">
+                    <a href="' . route('competitor.edit', $competitor) . '" class="mx-2" title="Edit"><i class="fas fa-edit"></i></a>
+                    ' . $deleteButton . '
+                </div>';
             });
-            
-        return $dataTable->rawColumns(['action', 'website_link', 'status'])->make(true);
+
+        return $dataTable->rawColumns(['name', 'website_link', 'shortname', 'price_class_name', 'actions'])->make(true);
     }
-} 
+}

@@ -4,6 +4,7 @@
 @section('styles')
     <link rel="stylesheet" href="{{ mix('css/dataTables.bootstrap5.css') }}">
     <link rel="stylesheet" href="{{ mix('css/buttons.bootstrap5.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/toastr.css') }}">
     <link rel="stylesheet" href="{{ asset('css/datatable-common.css') }}">
 @endsection
 
@@ -80,6 +81,7 @@
     <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         $(document).ready(function() {
             function showPageLoading() {
@@ -196,26 +198,17 @@
             // Auto-focus search input on page load
             $('#search').focus();
 
-            // Check for success message from server after deletion
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
             @if(session('success'))
-                Swal.fire({
-                    title: 'Success!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonColor: '#28a745',
-                    confirmButtonText: 'OK'
-                });
+                toastr.success("{{ session('success') }}");
             @endif
-
-            // Check for error message from server
-            @if(session('error'))
-                Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session('error') }}',
-                    icon: 'error',
-                    confirmButtonColor: '#dc3545',
-                    confirmButtonText: 'OK'
-                });
+            @if(session('user_created_success'))
+                toastr.success('{{ session('user_created_success') }}');
             @endif
         });
     </script>

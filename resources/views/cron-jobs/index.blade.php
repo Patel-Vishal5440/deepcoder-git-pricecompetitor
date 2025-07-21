@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="card mt-3" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
                     <div class="card-body p-3">
-                                                    <div class="color-dark fw-500 d-flex justify-content-start mt-15 mx-4">
+                                                    <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
                                 <div class="input-container icon-left icon-right position-relative">
                                     <span class="input-icon icon-left">
                                         <span data-feather="search"></span>
@@ -28,7 +28,7 @@
                                         class="form-control form-control-solid w-250px ps-12 table_search"
                                         placeholder="Search Cron Jobs">
                                 </div>
-                                <div class="action-btn ms-auto">
+                                <div class="action-btn">
                                     <a href="{{ route('cron-jobs.create') }}" class="btn btn-outline-primary">
                                         <i class="fas fa-plus"></i> Create Cron Job
                                     </a>
@@ -53,12 +53,13 @@
                         </div>
                     </div>
                 </div>
-</div>
-
-<div id="loadingIndicator"
-     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-    <div class="spinner-border text-danger" role="status"></div>
-</div>
+            </div>
+        </div>
+    </div>
+    <div id="loadingIndicator"
+         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgb(0 0 0 / 32%); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div class="spinner-border text-danger" role="status"></div>
+    </div>
 @endsection
 
 @section('scripts')
