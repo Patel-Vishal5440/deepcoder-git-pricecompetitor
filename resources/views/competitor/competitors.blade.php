@@ -33,36 +33,6 @@
                                         <i class="fas fa-plus"></i>Add New</a>
                                 </div>
                             </div>
-                            
-                            <!-- Success/Error Messages -->
-                            @if(session('delete'))
-                                <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
-                                    {{ session('delete') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show mx-4 mt-3" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            @if(session('create'))
-                                <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
-                                    {{ session('create') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-
-                            @if(session('update'))
-                                <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
-                                    {{ session('update') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-
                             <div class="table4 p-25 bg-white mb-30">
                                 <div class="table-responsive">
                                     <table id="datatable" class="table mb-0 datatable">
@@ -118,6 +88,24 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "3000"
+    };
+    @if(session('create'))
+        toastr.success("{{ session('create') }}");
+    @endif
+    @if(session('update'))
+        toastr.success("{{ session('update') }}");
+    @endif
+    @if(session('delete'))
+        toastr.success("{{ session('delete') }}");
+    @endif
+    @if(session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
     function showPageLoading() {
         document.getElementById("loadingIndicator").style.display = "flex";
     }
@@ -135,7 +123,11 @@ $(document).ready(function() {
             emptyTable: `<div class="py-4 text-center text-muted">
                 <i class="fas fa-users fa-2x mb-2"></i><br>
                 <span style="font-size: 1.1em;">No competitors found.</span>
-            </div>`
+            </div>`, 
+            paginate: {
+                previous: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="12 4 6 9 12 14"></polyline></svg>`,
+                next: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="6 4 12 9 6 14"></polyline></svg>`
+            }
         },
         ajax: {
             url: "{{ route('competitor.list') }}",

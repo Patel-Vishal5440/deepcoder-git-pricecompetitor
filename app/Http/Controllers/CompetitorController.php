@@ -73,7 +73,7 @@ class CompetitorController extends Controller
             $competitor->price_class_name = $request->price_class_name;
             $competitor->status = $request->status;
             $competitor->save();
-            return redirect()->route('competitor.list')->with('create', 'Competitor created successfully !');
+            return redirect()->route('competitor.list')->with('create', 'Competitor created successfully');
         }
     }
 
@@ -118,7 +118,7 @@ class CompetitorController extends Controller
             $competitor->price_class_name = $request->price_class_name;
             $competitor->status = $request->status;
             $competitor->save();
-            return redirect()->route('competitor.list')->with('update', 'Competitor updated successfully !');
+            return redirect()->route('competitor.list')->with('update', 'Competitor updated successfully');
         }
     }
 

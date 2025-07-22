@@ -18,9 +18,11 @@ use App\Jobs\StoreOdooProducts;
 use App\Models\ActivityFeed;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\ScrapesCompetitorPrice;
 
 class ProductController extends Controller
 {
+    use ScrapesCompetitorPrice;
     protected $repo;
     protected $odooService;
     public function __construct(OdooService $odooService)
@@ -120,114 +122,51 @@ class ProductController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Failed to sync product'], 404);
     }
-
     public function addLink(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required',
-            'competitor_id' => 'required',
+        $validated = $request->validate([
+            'product_id' => 'required|integer',
+            'competitor_id' => 'required|integer',
             'competitor_url' => 'required|url'
         ]);
 
         try {
-            // Validate that product exists
-            $product = Product::find($request->product_id);
-            if (!$product) {
-                return response()->json(['success' => false, 'message' => 'Product not found'], 404);
+            $product = Product::find($validated['product_id']);
+            if (!$product) return $this->jsonError('Product not found', 404);
+
+            $competitor = Competitor::find($validated['competitor_id']);
+            if (!$competitor) return $this->jsonError('Competitor not found', 404);
+
+            if (!$this->validateDomainMatch($validated['competitor_url'], $competitor->website)) {
+                return $this->jsonError("URL domain does not match competitor's website.");
             }
 
             $productCompetitorPrice = ProductCompetitorPrice::updateOrCreate(
                 [
-                    'product_id' => $request->product_id,
-                    'competitor_id' => $request->competitor_id
+                    'product_id' => $validated['product_id'],
+                    'competitor_id' => $validated['competitor_id']
                 ],
-                [
-                    'product_id' => $request->product_id,
-                    'competitor_id' => $request->competitor_id,
-                    'competitor_url' => $request->competitor_url
-                ]
+                ['competitor_url' => $validated['competitor_url']]
             );
 
-            $competitor = Competitor::find($request->competitor_id);
-            
-            if (!$competitor) {
-                return response()->json(['success' => false, 'message' => 'Competitor not found'], 404);
-            }
-            
-            $competitorName = $competitor->name;
-            $competitorUrl = $competitor->website;
-            
-            // Use the provided competitor_url instead of competitor's website
-            $url = $request->competitor_url;
-            $class = '.price-wrapper .price';
+            $price = $this->scrapeCompetitorPrice($validated['competitor_url']);
+            if (!$price) return $this->jsonError('Failed to extract price');
 
-            // Validate URL before making the request
-            if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
-                return response()->json(['success' => false, 'message' => 'Invalid URL provided'], 400);
-            }
+            $productCompetitorPrice->update(['price' => $price]);
 
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept' => 'text/html',
-            ])->get($url);
-
-
-            if (!$response->successful()) {
-                Log::error('Failed to fetch data from URL', [
-                    'url' => $url,
-                    'status' => $response->status(),
-                    'response_body' => $response->body()
-                ]);
-                return response()->json(['success' => false, 'message' => 'Failed to fetch data from the provided URL', 'status' => $response->status()]);
-            }
-
-            $html = $response->body();
-            $crawler = new Crawler($html);
-
-            if (strpos($url, 'injuredgadgets.com') !== false) {
-                $class = '.price-wrapper .price';
-                $amount = $crawler->filter('.price-wrapper')->attr('data-price-amount');
-            } elseif (strpos($url, 'mobilesentrix.com') !== false) {
-                $class = '.regular-price.price';
-                $amount = $crawler->filter('.product-cart-pay')->attr('data-pp-amount');
-            } else {
-                $class = '.price-final_price';
-                $amount = $crawler->filter('.price-wrapper')->attr('data-price-amount'); // Extract price from data attribute
-            }
-
-            $priceElements = $crawler->filter($class);
-            if ($priceElements->count() > 0 || $amount) {
-                if ($amount) {
-                    // No need to reassign $amount to itself
-                } else {
-                    $priceText = $priceElements->first()->text();
-                    preg_match('/[0-9]+(?:\.[0-9]{1,2})?/', $priceText, $matches);
-                    $amount = $matches[0] ?? null;
-                }
-            } else {
-                Log::error('No price elements found for the given class.', [
-                    'url' => $url,
-                    'class' => $class
-                ]);
-                return response()->json(['success' => false, 'message' => 'Failed to scrape price - no price elements found']);
-            }
-
-            if (!$amount) {
-                Log::error('Price not found using fallback method.');
-                return response()->json(['success' => false, 'message' => 'Failed to scrape price']);
-            }
-
-            $productCompetitorPrice->update(['price' => $amount]);
-
-            return response()->json(['success' => true, 'message' => 'Price scraped successfully!', 'price' => $amount]);
-        } catch (\Exception $e) {
-            Log::error('Error in addLink: ' . $e->getMessage(), [
-                'product_id' => $request->product_id,
-                'competitor_id' => $request->competitor_id,
-                'competitor_url' => $request->competitor_url,
-                'exception' => $e
+            return response()->json([
+                'success' => true,
+                'message' => 'Price scraped successfully',
+                'price' => $price
             ]);
-            return response()->json(['success' => false, 'message' => 'An error occurred while processing your request.']);
+        } catch (\Exception $e) {
+            Log::error('addLink Error', [
+                'error' => $e->getMessage(),
+                'product_id' => $validated['product_id'],
+                'competitor_id' => $validated['competitor_id'],
+                'url' => $validated['competitor_url']
+            ]);
+            return $this->jsonError('Internal server error', 500);
         }
     }
 }

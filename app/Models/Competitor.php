@@ -14,6 +14,6 @@ class Competitor extends Model {
 
     public static function getCompetitorNames()
     {
-            return self::orderBy('id')->pluck('shortname','id')->toArray();
+        return self::orderBy('id')->get();
     }
 }

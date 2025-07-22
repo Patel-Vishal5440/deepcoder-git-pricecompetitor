@@ -42,8 +42,8 @@
                                             <th class="text-start">Product Name</th>
                                             <th class="text-center">Sku</th>
                                             <th class="text-center">Price</th>
-                                            @foreach ($competitors as $competitorId => $competitorName)
-                                                <th class="text-center">{{ $competitorName }} Link</th>
+                                            @foreach ($competitors as $competitor)
+                                                <th class="text-center">{{ $competitor->shortname }} Link</th>
                                                 <th class="text-center">Price</th>
                                             @endforeach
                                             <th class="text-center">Actions</th>
@@ -65,17 +65,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Assign Competitor Link</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="text" class="form-control" id="modalCompetitorLink" placeholder="Enter Competitor Link">
+                <div class="mb-4">
+                    <div class="mb-2"><span class="fw-semibold text-dark">Competitor Website :</span> <span id="ciWebsite"></span></div>
+                </div>
+                <div class="mb-3">
+                    <label for="modalCompetitorLink" class="form-label">Competitor Link</label>
+                    <input type="text" class="form-control mb-3" id="modalCompetitorLink" placeholder="Paste competitor product link here">
+                    <div id="modalCompetitorLinkError" class="invalid-feedback" style="display:none;"></div>
+                </div>
                 <input type="hidden" id="modalCompetitorId">
                 <input type="hidden" id="modalProductId">
-                <div id="modalCompetitorLinkError" class="text-danger mt-2" style="display:none;"></div>
+                <input type="hidden" id="modalCompetitorWebsite">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveCompetitorLink">Save Link</button>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-light px-4 mx-1" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary px-4 mx-1" id="saveCompetitorLink">Save Link</button>
             </div>
         </div>
     </div>
@@ -134,7 +140,11 @@ $(document).ready(function() {
             emptyTable: `<div class="py-4 text-center text-muted">
                 <i class="fas fa-box-open fa-2x mb-2"></i><br>
                 <span style="font-size: 1.1em;">No products found.</span>
-            </div>`
+            </div>`,
+            paginate: {
+                previous: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="12 4 6 9 12 14"></polyline></svg>`,
+                next: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="6 4 12 9 6 14"></polyline></svg>`
+            }
         },
         ajax: {
             url: "{{ route('products.list') }}",
@@ -166,16 +176,21 @@ $(document).ready(function() {
                         </div>`;
                 }
             },
-            @foreach ($competitors as $competitorId => $competitorName)
+            @foreach ($competitors as $competitor)
             {
-                data: 'competitor_link_{{ $competitorId }}',
-                name: 'competitor_link_{{ $competitorId }}',
+                data: 'competitor_link_{{ $competitor->id }}',
+                name: 'competitor_link_{{ $competitor->id }}',
                 className: 'text-center',
                 render: function(data, type, row) {
                     return `
                         <div class="d-flex justify-content-center align-items-center gap-1">
                             <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-light-primary add-link-btn"
-                               data-row-id="{{ $competitorId }}" data-product-id="${row.id}" data-current-link="${data || ''}">
+                               data-row-id="{{ $competitor->id }}" 
+                               data-product-id="${row.id}" 
+                               data-current-link="${data || ''}"
+                               data-competitor-name="{{ $competitor->name }}"
+                               data-competitor-shortname="{{ $competitor->shortname }}"
+                               data-competitor-website="{{ $competitor->website }}">
                                 <i class="fas fa-link fs-6"></i>
                             </a>
                             <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-light-info"
@@ -188,8 +203,8 @@ $(document).ready(function() {
                 }
             },
             {
-                data: 'competitor_price_{{ $competitorId }}',
-                name: 'competitor_price_{{ $competitorId }}',
+                data: 'competitor_price_{{ $competitor->id }}',
+                name: 'competitor_price_{{ $competitor->id }}',
                 className: 'text-center',
                 render: function(data) {
                     return `<span>${data}</span>`;
@@ -229,32 +244,74 @@ $(document).ready(function() {
         $('#modalCompetitorId').val($(this).data('row-id'));
         $('#modalProductId').val($(this).data('product-id'));
         $('#modalCompetitorLink').val($(this).data('current-link'));
-        // For competitor link modal
-        $('#modalCompetitorLinkError').hide();
+        $('#modalCompetitorWebsite').val($(this).data('competitor-website'));
+
+        // Display all competitor info
+        const competitorShortname = $(this).data('competitor-shortname');
+        const competitorWebsite = $(this).data('competitor-website');
+        $('#ciShortname').text(competitorShortname);
+        if (competitorWebsite) {
+            $('#ciWebsite').html(`<a href='${competitorWebsite}' target='_blank' class='text-primary text-decoration-underline fw-semibold'>${competitorWebsite}</a>`);
+        } else {
+            $('#ciWebsite').html('<span class="text-secondary">N/A</span>');
+        }
+
+        // Show expected domain info
+        if (competitorWebsite) {
+            try {
+                const expectedDomain = new URL(competitorWebsite).hostname.replace(/^www\./, '').toLowerCase();
+                $('#expectedDomain').text(expectedDomain);
+            } catch (e) {
+                $('#expectedDomain').text('Invalid competitor website');
+            }
+        } else {
+            $('#expectedDomain').text('No website configured for this competitor');
+        }
+        $('#expectedDomainAlert').show();
+
+        // Reset error
+        $('#modalCompetitorLinkError').hide().text("");
         $('#modalCompetitorLink').removeClass('is-invalid');
         $('#competitorLinkModal').modal('show');
     });
 
     $(document).on('click', '#saveCompetitorLink', function() {
         showPageLoading();
-        $('#modalCompetitorLinkError').hide();
+        $('#modalCompetitorLinkError').hide().text("");
         $('#modalCompetitorLink').removeClass('is-invalid');
         let competitorId = $('#modalCompetitorId').val();
         let productId = $('#modalProductId').val();
         let link = $('#modalCompetitorLink').val();
+        let competitorWebsite = $('#modalCompetitorWebsite').val();
 
         if (!link.trim()) {
-            // Show error near input
             $('#modalCompetitorLinkError').text('Please enter a URL').show();
             $('#modalCompetitorLink').addClass('is-invalid');
-            // Do NOT close the modal
             hidePageLoading();
-            // Do NOT reload table
             return;
-        } else {
-            $('#modalCompetitorLinkError').hide();
-            $('#modalCompetitorLink').removeClass('is-invalid');
         }
+
+        // Client-side domain validation
+        if (competitorWebsite) {
+            try {
+                const providedDomain = new URL(link).hostname.replace(/^www\./, '').toLowerCase();
+                const competitorDomain = new URL(competitorWebsite).hostname.replace(/^www\./, '').toLowerCase();
+                if (providedDomain !== competitorDomain) {
+                    $('#modalCompetitorLinkError').text(`URL domain does not match competitor's website. Expected: ${competitorDomain}, provided: ${providedDomain}`).show();
+                    $('#modalCompetitorLink').addClass('is-invalid');
+                    hidePageLoading();
+                    return;
+                }
+            } catch (e) {
+                $('#modalCompetitorLinkError').text('Invalid URL format').show();
+                $('#modalCompetitorLink').addClass('is-invalid');
+                hidePageLoading();
+                return;
+            }
+        }
+
+        $('#modalCompetitorLinkError').hide().text("");
+        $('#modalCompetitorLink').removeClass('is-invalid');
 
         $.post("{{ route('products.addLink') }}", {
             _token: "{{ csrf_token() }}",
@@ -270,9 +327,14 @@ $(document).ready(function() {
             } else {
                 toastr.error(response.message);
             }
-        }).fail(function() {
+        }).fail(function(xhr) {
             hidePageLoading();
-            toastr.error('Request failed');
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                $('#modalCompetitorLinkError').text(xhr.responseJSON.message).show();
+                $('#modalCompetitorLink').addClass('is-invalid');
+            } else {
+                toastr.error('Request failed');
+            }
         });
     });
 

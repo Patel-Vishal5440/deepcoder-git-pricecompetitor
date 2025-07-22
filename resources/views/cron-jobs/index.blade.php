@@ -89,7 +89,11 @@ $(document).ready(function() {
             emptyTable: `<div class="py-4 text-center text-muted">
                 <i class="fas fa-clock fa-2x mb-2"></i><br>
                 <span style="font-size: 1.1em;">No cron jobs found.</span>
-            </div>`
+            </div>`,
+            paginate: {
+                previous: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="12 4 6 9 12 14"></polyline></svg>`,
+                next: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="6 4 12 9 6 14"></polyline></svg>`
+            }
         },
         ajax: {
             url: "{{ route('cron-jobs.index') }}",
