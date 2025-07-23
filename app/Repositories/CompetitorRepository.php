@@ -54,11 +54,6 @@ class CompetitorRepository
             }
             return "<span class='text-muted'>N/A</span>";
         })
-        ->addColumn('status', function ($competitor) {
-            return "<span class='badge " . ($competitor->status ? 'bg-success' : 'bg-danger') . "'>" . 
-                ($competitor->status ? 'Active' : 'Inactive') . 
-                "</span>";  
-        })
         ->editColumn('name', function ($competitor) {
             return $competitor->name ?? 'N/A';
         })

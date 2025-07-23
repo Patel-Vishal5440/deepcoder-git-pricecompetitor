@@ -31,9 +31,8 @@ class ProductRepository
         $dataTable = DataTables::of($product)
             ->addColumn('action', function ($product) {
                 $syncButton = "<a href='javascript:void(0);' 
-                    class='btn btn-icon btn-sm btn-light-primary sync-product' 
-                    data-product-id='{$product->odoo_id}'
-                    style='width: 32px; height: 32px;'>
+                    class='btn btn-icon btn-sm btn-light-primary sync-product m-2 text-light' 
+                    data-product-id='{$product->odoo_id}'>
                     <i class='fas fa-sync fs-6 m-0'></i></a>";
                     
                 return $syncButton;

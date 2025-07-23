@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
-    <div class="contents mt-5">
-        <div class="container-fluid">
+    <div class="contents">
+        <div class="">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="card card-Vertical card-default card-md mb-4">
+                    <div class="card card-Vertical card-default card-md">
                         <div class="card-header py-4">
                             <h4>{{ isset($competitor) ? 'Edit Competitor Form' : 'New Competitor Form' }}</h4>
                         </div>

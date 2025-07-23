@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Email</label>
+                            <label>Email <span class="text-danger">*</span></label>
                             <input type="email" value="{{ $user->email }}" class="form-control" readonly>
                         </div>
 

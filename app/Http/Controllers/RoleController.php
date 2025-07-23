@@ -81,7 +81,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:roles,name',
+            'name' => 'required|string|min:3|max:255|unique:roles,name',
             'description' => 'nullable|string',
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,id'
@@ -140,7 +140,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'name' => 'required|string|min:3|max:255|unique:roles,name,' . $role->id,
             'description' => 'nullable|string',
             'permissions' => 'array',
             'permissions.*' => 'exists:permissions,id'

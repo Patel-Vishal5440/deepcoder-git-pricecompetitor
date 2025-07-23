@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="contents">
-        <div class="container-fluid">
+        <div class="">
             <div class="row justify-content-center">
                 <div class="col-lg-7 col-md-9 col-12">
-                    <div class="card mt-4">
+                    <div class="card">
                         <div class="card-header p-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Permission Details</h5>
@@ -27,11 +27,11 @@
                                 <dt class="col-sm-4">Status</dt>
                                 <dd class="col-sm-8">
                                     @if ($permission->is_active == 'Active')
-                                        <span class="badge-lg rounded px-3 py-1"
+                                        <span class="badge-lg rounded px-3 py-1 m-1"
                                             style="font-size: 12px; font-weight: 500; color: #198754; background-color: #30ff302b;">Active
                                         </span>
                                     @else
-                                        <span class="badge-lg rounded px-3 py-1"
+                                        <span class="badge-lg rounded px-3 py-1 m-1"
                                             style="font-size: 12px; font-weight: 500; color: #dc3545; background-color: #ffcccc85;">Inactive
                                         </span>
                                     @endif
@@ -42,7 +42,7 @@
                                     @if ($permission->roles->count())
                                         <div class="d-flex flex-wrap gap-1">
                                             @foreach ($permission->roles as $role)
-                                                <span class="badge-lg text-primary rounded px-3 py-1"
+                                                <span class="badge-lg text-primary rounded px-3 py-1 m-1"
                                                     style="font-size: 12px;font-weight: 500;background-color: #5f63f221;">{{ $role->name }}</span>
                                             @endforeach
                                         </div>

@@ -32,7 +32,7 @@
                                 <div class="error-page__title">404</div>
                                 <h5 class="fw-500">Sorry! the page you are looking for doesn't exist.</h5>
                                 <div class="content-center mt-30">
-                                    <a href="{{ route('dashboards.index') }}" class="btn btn-primary btn-default btn-squared px-30">Return Home</a>
+                                    <a href="{{ route('products.list') }}" class="btn btn-primary btn-default btn-squared px-30">Return Home</a>
                                 </div>
                             </div>
                         </div>

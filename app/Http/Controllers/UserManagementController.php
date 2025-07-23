@@ -245,8 +245,8 @@ class UserManagementController extends Controller
      */
     public function permissions(User $user)
     {
-        $pageTitle = 'User Permissions';
-        $pageDescription = 'View user permissions through their role';
+        $pageTitle = 'User Permission';
+        $pageDescription = 'View user permission through their role';
         
         $user->load('role.permissions');
         

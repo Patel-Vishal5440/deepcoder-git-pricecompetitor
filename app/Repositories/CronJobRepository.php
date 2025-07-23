@@ -70,37 +70,12 @@ class CronJobRepository
                     </code>
                 </div>';
             })
-            ->addColumn('status', function ($cronJob) {
-                return '<div class="userDatatable-content">' . $cronJob->status_badge . '</div>';
-            })
             ->addColumn('last_run', function ($cronJob) {
                 return '<div class="userDatatable-content">
                     <small>' . $cronJob->formatted_last_run . '</small>
                 </div>';
-            })
-            ->addColumn('actions', function ($cronJob) {
-                $actions = '<div class="d-inline-flex gap-2 align-items-center">';
-                $actions .= '<a href="' . route('cron-jobs.show', $cronJob) . '" title="View" class="mx-2"><i class="fas fa-eye"></i></a>';
-                $actions .= '<span class="text-light">|</span>';
-                $actions .= '<a href="' . route('cron-jobs.edit', $cronJob) . '" title="Edit" class="mx-2"><i class="fas fa-edit"></i></a>';
-                $actions .= '<span class="text-light">|</span>';
-                $actions .= '<form action="' . route('cron-jobs.toggle-status', $cronJob) . '" method="POST" style="display:inline">';
-                $actions .= csrf_field();
-                $actions .= method_field('PATCH');
-                $actions .= '<button type="submit" class="btn btn-link p-0 m-0 align-baseline mx-2" style="font-size:inherit;" title="' . ($cronJob->is_active ? 'Deactivate' : 'Activate') . '">';
-                $actions .= '<i class="fas fa-' . ($cronJob->is_active ? 'pause' : 'play') . '"></i>';
-                $actions .= '</button></form>';
-                $actions .= '<span class="text-light">|</span>';
-                $actions .= '<form action="' . route('cron-jobs.destroy', $cronJob) . '" method="POST" style="display:inline" class="delete-form">';
-                $actions .= csrf_field();
-                $actions .= method_field('DELETE');
-                $actions .= '<button type="submit" class="btn btn-link text-danger p-0 m-0 align-baseline mx-2" style="font-size:inherit;" title="Delete">';
-                $actions .= '<i class="fas fa-trash m-0"></i>';
-                $actions .= '</button></form>';
-                $actions .= '</div>';
-                return $actions;
             });
 
-        return $dataTable->rawColumns(['name', 'description', 'schedule', 'command', 'status', 'last_run', 'actions'])->make(true);
+        return $dataTable->rawColumns(['name', 'description', 'schedule', 'command', 'last_run'])->make(true);
     }
 } 

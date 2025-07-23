@@ -4,52 +4,56 @@
 
 @section('content')
     <div class="contents">
-        <div class="container-fluid">
+        <div class="">
             <div class="row justify-content-center">
                 <div class="col-lg-7 col-md-9 col-12">
-                    <div class="card mt-4">
-                        <div class="card-body p-4">
-                            <h5 class="mb-4">{{ isset($permission) ? 'Edit Permission' : 'Create Permission' }}</h5>
-                            
-                            @if($errors->any())
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <ul class="mb-0">
-                                        @foreach($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+                    <div class="card">
+                        <div class="card-header py-4">
+                            @if (isset($permission))
+                                <h4>Edit Permission Form</h4>
+                            @else
+                                <h4>Create Permission Form</h4>
                             @endif
-
-                            <form action="{{ isset($permission) ? route('permissions.update', $permission) : route('permissions.store') }}" method="POST" id="permissionForm">
+                        </div>
+                        <div class="card-body p-4">
+                            <form
+                                action="{{ isset($permission) ? route('permissions.update', $permission) : route('permissions.store') }}"
+                                method="POST" id="permissionForm">
                                 @csrf
-                                @if(isset($permission))
+                                @if (isset($permission))
                                     @method('PUT')
                                 @endif
-                                
+
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
-                                        value="{{ old('name', $permission->name ?? '') }}" placeholder="Enter permission name">
+                                    <input type="text" name="name" id="name"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name', $permission->name ?? '') }}"
+                                        placeholder="Enter permission name">
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="text-danger" id="name-error"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="description" class="form-label">Description<span class="text-danger">*</span></label>
-                                    <input type="text" name="description" id="description" class="form-control @error('description') is-invalid @enderror"
-                                        value="{{ old('description', $permission->description ?? '') }}" placeholder="Enter permission description">
+                                    <label for="description" class="form-label">Description<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="description" id="description"
+                                        class="form-control @error('description') is-invalid @enderror"
+                                        value="{{ old('description', $permission->description ?? '') }}"
+                                        placeholder="Enter permission description">
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="text-danger" id="description-error"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="group" class="form-label">Module<span class="text-danger">*</span></label>
-                                    <input type="text" name="group" id="group" class="form-control @error('group') is-invalid @enderror"
-                                        value="{{ old('group', $permission->group ?? '') }}" placeholder="Enter module name">
+                                    <label for="group" class="form-label">Module<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="group" id="group"
+                                        class="form-control @error('group') is-invalid @enderror"
+                                        value="{{ old('group', $permission->group ?? '') }}"
+                                        placeholder="Enter module name">
                                     @error('group')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -59,14 +63,14 @@
                                     <label class="form-label">Status</label><br>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
-                                            value="1" {{ old('is_active', $permission->is_active ?? true) ? 'checked' : '' }}>
+                                            value="1"
+                                            {{ old('is_active', $permission->is_active ?? true) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_active">Active</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="d-flex justify-content-end">
-                                    <a href="{{ route('permissions.index') }}"
-                                        class="btn btn-light px-4 mx-1">Cancel</a>
+                                    <a href="{{ route('permissions.index') }}" class="btn btn-light px-4 mx-1">Cancel</a>
                                     <button type="submit" class="btn btn-primary px-4 mx-1" id="submitBtn">
                                         {{ isset($permission) ? 'Update Permission' : 'Create Permission' }}
                                     </button>
@@ -146,12 +150,16 @@
                     // Scroll to first error
                     const firstError = form.querySelector('.is-invalid');
                     if (firstError) {
-                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
                     }
                 } else {
                     // Show loading state
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' + 
+                    submitBtn.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' +
                         (isEditMode ? 'Updating...' : 'Creating...');
                 }
             });
@@ -173,7 +181,8 @@
                     nameInput.classList.add('is-invalid');
                     return false;
                 } else if (!/^[a-zA-Z0-9\s._-]+$/.test(name)) {
-                    errorElement.textContent = 'Permission name can only contain letters, numbers, spaces, dots, underscores, and hyphens';
+                    errorElement.textContent =
+                        'Permission name can only contain letters, numbers, spaces, dots, underscores, and hyphens';
                     nameInput.classList.add('is-invalid');
                     return false;
                 } else {
@@ -223,7 +232,8 @@
                     groupInput.classList.add('is-invalid');
                     return false;
                 } else if (!/^[a-zA-Z0-9\s._-]+$/.test(group)) {
-                    errorElement.textContent = 'Module name can only contain letters, numbers, spaces, dots, underscores, and hyphens';
+                    errorElement.textContent =
+                        'Module name can only contain letters, numbers, spaces, dots, underscores, and hyphens';
                     groupInput.classList.add('is-invalid');
                     return false;
                 } else {
@@ -246,18 +256,18 @@
                 console.log('Name input:', nameInput.value);
                 console.log('Description input:', descriptionInput.value);
                 console.log('Group input:', groupInput.value);
-                
+
                 const nameValid = validateName();
                 const descValid = validateDescription();
                 const groupValid = validateGroup();
-                
+
                 console.log('Name valid:', nameValid);
                 console.log('Description valid:', descValid);
                 console.log('Group valid:', groupValid);
-                
+
                 const formValid = nameValid && descValid && groupValid;
                 console.log('Form valid:', formValid);
-                
+
                 return formValid;
             };
 
@@ -271,32 +281,32 @@
             border-color: #dc3545;
             box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
         }
-        
+
         .form-control:focus {
             border-color: #86b7fe;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
-        
+
         .form-control.is-invalid:focus {
             border-color: #dc3545;
             box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
         }
-        
+
         .btn:disabled {
             cursor: not-allowed;
             opacity: 0.6;
         }
-        
+
         .text-danger {
             font-size: 0.875em;
             margin-top: 0.25rem;
         }
-        
+
         .form-check-input:checked {
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
-        
+
         .form-check-input:focus {
             border-color: #86b7fe;
             outline: 0;

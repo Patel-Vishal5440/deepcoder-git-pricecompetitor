@@ -96,14 +96,14 @@ mark {
 
 .pagination {
     margin: 0;
-    gap: 1px;
+    gap: 5px;
 }
 
 .pagination .page-link {
     border-radius: 4px;
     border: 1px solid #e9ecef;
     color: #495057;
-    padding: 0.25rem 0.5rem;
+    padding: 0.45rem 0.5rem;
     font-size: 0.75rem;
     transition: all 0.2s ease-in-out;
     min-width: 32px;
@@ -172,3 +172,7 @@ mark {
     text-align: left;
     word-break: break-word;
 } 
+div.dataTables_wrapper div.dataTables_paginate ul.pagination
+{
+    align-items: center;
+}

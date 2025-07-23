@@ -8,10 +8,10 @@
 
 @section('content')
     <div class="contents">
-        <div class="container-fluid">
+        <div class="">
             <div class="row">
                 <div class="col-12">
-                    <div class="card mt-4">
+                    <div class="card">
                         <div class="card-body p-0">
                             <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
                                 <div class="input-container icon-left icon-right position-relative">
@@ -22,7 +22,7 @@
                                         <i data-feather="x" class="text-muted"></i>
                                     </span>
                                     <input type="text" id="search" class="form-control form-control-default" 
-                                           placeholder="Search price history..." style="width: 300px;" 
+                                           placeholder="Search Price History" style="width: 300px;" 
                                            maxlength="255" autocomplete="off">
                                 </div>
                             </div>
@@ -91,10 +91,6 @@
                         <i class="fas fa-history fa-2x mb-2"></i><br>
                         <span style="font-size: 1.1em;">No price history found.</span>
                     </div>`,
-                    paginate: {
-                        previous: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="12 4 6 9 12 14"></polyline></svg>`,
-                        next: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="6 4 12 9 6 14"></polyline></svg>`
-                    }
                 },
                 ajax: {
                     url: "{{ route('price_history.list') }}",

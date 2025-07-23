@@ -2,14 +2,14 @@
 @section('title', $pageTitle)
 @section('content')
 <div class="contents">
-    <div class="container-fluid">
+    <div class="">
         <div class="row">
             <div class="col-12">
-                <div class="card my-4">
+                <div class="card">
                     <div class="card-header p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5>User Permissions</h5>
+                                <h5>User Permission</h5>
                                 <p class="text-muted mb-0 mt-1">{{ $pageDescription }}</p>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                                         </table>
                                     </div>
                                 @else
-                                    <div class="alert alert-info">
+                                    <div class="alert alert-warning">
                                         @if($user->role)
                                             This role has no specific permissions assigned.
                                         @else

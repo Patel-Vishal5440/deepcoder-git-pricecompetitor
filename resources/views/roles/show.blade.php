@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="contents">
-        <div class="container-fluid">
+        <div class="">
             <div class="row">
                 <div class="col-12">
-                    <div class="card my-4">
+                    <div class="card">
                         <div class="card-header p-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -121,7 +121,7 @@
                                                     @endphp
 
                                                     @foreach ($permissionsByGroup as $group => $groupPermissions)
-                                                        <div class="col-md-6 mb-3">
+                                                        <div class="col-md-4 mb-3">
                                                             <div class="card border">
                                                                 <div class="card-header py-2">
                                                                     <p class="mb-0">{{ $group }}

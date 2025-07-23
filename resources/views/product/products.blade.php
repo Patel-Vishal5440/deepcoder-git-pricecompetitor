@@ -14,10 +14,10 @@
 
 @section('content')
 <div class="contents">
-    <div class="container-fluid" style="max-width: 100%;">
+    <div class="">
         <div class="row">
             <div class="col-12">
-                <div class="card mt-3" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
+                <div class="card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
                     <div class="card-body p-3">
                         <div class="color-dark fw-500 d-flex justify-content-start mt-15 mx-4">
                             <div class="input-container icon-left icon-right position-relative">
@@ -141,10 +141,6 @@ $(document).ready(function() {
                 <i class="fas fa-box-open fa-2x mb-2"></i><br>
                 <span style="font-size: 1.1em;">No products found.</span>
             </div>`,
-            paginate: {
-                previous: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="12 4 6 9 12 14"></polyline></svg>`,
-                next: `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polyline points="6 4 12 9 6 14"></polyline></svg>`
-            }
         },
         ajax: {
             url: "{{ route('products.list') }}",
@@ -159,7 +155,7 @@ $(document).ready(function() {
         },
         columns: [
             // { data: 'odoo_id', name: 'id', className: 'text-center', width: '60px' },
-            { data: 'name', name: 'name', className: 'text-start product-name-wrap', width: '250px' },
+            { data: 'name', name: 'name', className: 'text-start', width: '250px' },
             { data: 'default_code', name: 'default_code', className: 'text-center', width: '120px' },
             {
                 data: 'list_price',
@@ -168,8 +164,8 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return `
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <span>${data}</span>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-light-primary edit-price-btn"
+                            <span class="mx-2">${data}</span>
+                            <a href="javascript:void(0)" class="mx-2 text-light edit-price-btn"
                                data-product-id="${row.odoo_id}" data-current-price="${data}">
                                 <i class="fas fa-edit fs-6"></i>
                             </a>
@@ -183,8 +179,8 @@ $(document).ready(function() {
                 className: 'text-center',
                 render: function(data, type, row) {
                     return `
-                        <div class="d-flex justify-content-center align-items-center gap-1">
-                            <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-light-primary add-link-btn"
+                        <div class="d-flex justify-content-center align-items-center">
+                            <a href="javascript:void(0)" class="m-2 text-light add-link-btn"
                                data-row-id="{{ $competitor->id }}" 
                                data-product-id="${row.id}" 
                                data-current-link="${data || ''}"
@@ -192,12 +188,6 @@ $(document).ready(function() {
                                data-competitor-shortname="{{ $competitor->shortname }}"
                                data-competitor-website="{{ $competitor->website }}">
                                 <i class="fas fa-link fs-6"></i>
-                            </a>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-light-info"
-                               data-bs-toggle="tooltip" data-bs-placement="top"
-                               data-bs-custom-class="tooltip-long" data-bs-html="true"
-                               data-bs-title="${data ? `<div style='max-width: 300px;'>${data}</div>` : 'No link'}">
-                                <i class="bi bi-info-circle fs-6"></i>
                             </a>
                         </div>`;
                 }

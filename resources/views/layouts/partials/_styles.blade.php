@@ -68,7 +68,7 @@
 }
 
 .sidebar_nav li a.active {
-    background-color: #e7f3ff;
+    background-color: #f8f9fa;
     color: #0d6efd;
     border-left-color: #0d6efd;
     font-weight: 500;

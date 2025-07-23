@@ -4378,7 +4378,7 @@ ul {
 }
 
 .contents {
-  padding: 74px 15px 72px 295px;
+  padding: 74px 15px 81px 295px;
   transition: all 0.3s ease;
 }
 
@@ -6731,7 +6731,7 @@ ul {
   color: #868eae;
   font-size: 12px;
   font-weight: 500;
-  padding: 0 30px;
+  padding: 0  9px;
   margin-bottom: 10px;
 }
 
@@ -27084,4 +27084,14 @@ table.table-rounded tbody tr td:last-child {
   border-radius: 5px;
   padding: 10px;
   margin: 5px;
+}
+.sidebar_nav
+{
+  margin: 0px !important;
+}
+
+.form-control, input, textarea
+{
+  background: rgba(239, 239, 239, 0.5);
+  transition: all 0.3s;
 }

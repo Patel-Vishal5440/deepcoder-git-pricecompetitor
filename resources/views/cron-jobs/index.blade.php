@@ -10,10 +10,10 @@
 
 @section('content')
 <div class="contents">
-    <div class="container-fluid">
+    <div class="">
         <div class="row">
             <div class="col-12">
-                <div class="card mt-3" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
+                <div class="card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.04); width: 100%;">
                     <div class="card-body p-3">
                                                     <div class="color-dark fw-500 d-flex justify-content-between mt-15 mx-4">
                                 <div class="input-container icon-left icon-right position-relative">
@@ -28,11 +28,6 @@
                                         class="form-control form-control-solid w-250px ps-12 table_search"
                                         placeholder="Search Cron Jobs">
                                 </div>
-                                <div class="action-btn">
-                                    <a href="{{ route('cron-jobs.create') }}" class="btn btn-outline-primary">
-                                        <i class="fas fa-plus"></i> Create Cron Job
-                                    </a>
-                                </div>
                             </div>
                         <div class="table4 p-25 bg-white mb-30">
                             <div class="table-responsive" style="overflow-x:auto;">
@@ -43,9 +38,7 @@
                                             <th class="text-center">Description</th>
                                             <th class="text-center">Schedule</th>
                                             <th class="text-center">Command</th>
-                                            <th class="text-center">Status</th>
                                             <th class="text-center">Last Run</th>
-                                            <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -111,9 +104,7 @@ $(document).ready(function() {
             { data: 'description', name: 'description', className: 'text-center' },
             { data: 'schedule', name: 'schedule', className: 'text-center' },
             { data: 'command', name: 'command', className: 'text-center' },
-            { data: 'status', name: 'status', className: 'text-center' },
             { data: 'last_run', name: 'last_run', className: 'text-center' },
-            { data: 'actions', name: 'actions', className: 'text-center', searchable: false }
         ]
     });
 

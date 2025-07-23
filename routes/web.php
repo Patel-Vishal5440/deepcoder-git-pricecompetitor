@@ -86,7 +86,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/{user}', [UserManagementController::class, 'update'])->name('user-management.update');
         Route::delete('/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
         Route::patch('/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('user-management.toggle-status');
-        Route::get('/{user}/permissions', [UserManagementController::class, 'permissions'])->name('user-management.permissions');
+        Route::get('/{user}/permission', [UserManagementController::class, 'permissions'])->name('user-management.permissions');
     });
 
     Route::group(['prefix' => 'competitor'], function () {
@@ -122,12 +122,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'cron-jobs'], function () {
         Route::get('/', [CronJobController::class, 'index'])->name('cron-jobs.index');
-        Route::get('/create', [CronJobController::class, 'create'])->name('cron-jobs.create');
-        Route::post('/', [CronJobController::class, 'store'])->name('cron-jobs.store');
-        Route::get('/{job}', [CronJobController::class, 'show'])->name('cron-jobs.show');
-        Route::get('/{job}/edit', [CronJobController::class, 'edit'])->name('cron-jobs.edit');
-        Route::put('/{job}', [CronJobController::class, 'update'])->name('cron-jobs.update');
-        Route::delete('/{job}', [CronJobController::class, 'destroy'])->name('cron-jobs.destroy');
         Route::patch('/{job}/toggle-status', [CronJobController::class, 'toggleStatus'])->name('cron-jobs.toggle-status');
     });
 
