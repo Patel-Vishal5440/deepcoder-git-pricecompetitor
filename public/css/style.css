@@ -4378,7 +4378,7 @@ ul {
 }
 
 .contents {
-  padding: 74px 15px 81px 295px;
+  padding: 84px 15px 81px 295px;
   transition: all 0.3s ease;
 }
 
@@ -6578,7 +6578,7 @@ ul {
   height: calc(100% - 74px);
   overflow-y: auto;
   left: 0;
-  top: 74px;
+  top: 70px;
   box-shadow: 0 0 30px rgba(146, 153, 184, 0.1);
   width: 280px;
   background: #fff;
@@ -27094,4 +27094,8 @@ table.table-rounded tbody tr td:last-child {
 {
   background: rgba(239, 239, 239, 0.5);
   transition: all 0.3s;
+}
+.navbar-light
+{
+  height: 71px;
 }
