@@ -76,7 +76,7 @@ class UserManagementRepository
             })
             ->addColumn('actions', function ($row) {
                 $deleteButton = '';
-                if ($row->id !== auth()->id()) {
+                if ($row->id !== auth()->id() && $row->role_id != '1') {
                     $deleteButton = '<span class="text-light">|</span>
                         <form action="' . route('user-management.destroy', $row) . '" method="POST" style="display:inline" class="delete-form">
                             ' . csrf_field() . '

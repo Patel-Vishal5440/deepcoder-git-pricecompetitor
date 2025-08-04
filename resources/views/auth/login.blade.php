@@ -69,9 +69,9 @@
                                                         <div class="checkbox-theme-default custom-checkbox ">
                                                             <input class="checkbox" type="checkbox" id="check-1"
                                                                 {{ old('check-1') ? 'checked' : '' }}>
-                                                            <label for="check-1">
+                                                            {{-- <label for="check-1">
                                                                 <span class="checkbox-text">Keep me logged in</span>
-                                                            </label>
+                                                            </label> --}}
                                                         </div>
                                                         {{-- <a href="{{ route('password.request') }}">forget password</a> --}}
                                                     </div>
